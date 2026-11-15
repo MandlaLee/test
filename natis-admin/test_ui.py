@@ -72,6 +72,36 @@ with sync_playwright() as p:
         page.locator('[data-nav="audit"]').first.click()
         assert 'Created demo record' in page.locator('tbody').inner_text()
     check('Audit trail records changes',audit)
+    def new_sections():
+        for slug,title in [('resources','Forms & manuals'),('campaigns','Campaigns & notices'),('brandkit','Brand assets')]:
+            page.locator(f'[data-nav="{slug}"]').first.click()
+            assert page.locator('h1').first.inner_text()==title
+            assert page.evaluate('window.__NATIS_DEMO__.getRoute()')==slug
+    check('New forms, campaigns and branding routes',new_sections)
+    def resource_links():
+        page.locator('[data-nav="resources"]').first.click()
+        assert page.locator('.resource-card').count()==8
+        page.locator('#localQuery').fill('PrDP')
+        assert page.locator('.resource-card').count()==1
+        page.locator('#localQuery').fill('')
+        for a in page.locator('.resource-open').all():
+            href=a.get_attribute('href')
+            from urllib.parse import unquote
+            assert (root/unquote(href)).is_file(),href
+    check('Supplied document links resolve inside package',resource_links)
+    def campaign_select():
+        page.locator('[data-nav="campaigns"]').first.click()
+        assert page.locator('.campaign-card').count()==5
+        page.locator('[data-feature="senior"]').click()
+        assert page.evaluate('window.__NATIS_DEMO__.getFeatured()')=='senior'
+        assert 'Senior citizen assistance' in page.locator('.feature-preview').inner_text()
+    check('Change featured demo banner and persist selection',campaign_select)
+    def brand_assets():
+        page.locator('[data-nav="brandkit"]').first.click()
+        assert page.locator('.brand-icon-card').count()==8
+        for path in ['assets/brand/rtmc-logo.png','assets/brand/natis-wordmark.png','assets/icons/learner.svg','assets/campaigns/cashless-centres.jpg']:
+            assert (root/path).is_file()
+    check('Brand files and eight service icons exist',brand_assets)
     check('No browser JavaScript errors',lambda:(_ for _ in ()).throw(AssertionError(errors)) if errors else None)
     mobile=browser.new_page(viewport={'width':390,'height':844},device_scale_factor=1)
     mobile.add_script_tag(content="Object.defineProperty(window,'localStorage',{value:(()=>{const d={};return{getItem:k=>d[k]||null,setItem:(k,v)=>d[k]=v};})()});")
@@ -84,6 +114,12 @@ with sync_playwright() as p:
         assert mobile.locator('h1').inner_text()=='Reports & analytics'
         assert mobile.evaluate('document.documentElement.scrollWidth <= window.innerWidth+1')
     check('Mobile menu navigation without horizontal overflow',responsive)
+    def mobile_resources():
+        mobile.locator('#menuToggle').click()
+        mobile.locator('[data-nav="resources"]').first.click()
+        assert mobile.locator('h1').first.inner_text()=='Forms & manuals'
+        assert mobile.evaluate('document.documentElement.scrollWidth <= window.innerWidth+1')
+    check('Mobile reference library navigation',mobile_resources)
     mobile.screenshot(path=str(root/'mobile.png'),full_page=True)
     browser.close()
 (root/'test-results.json').write_text(json.dumps(results,indent=2))
