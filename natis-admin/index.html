@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#34204f" />
+  <meta name="theme-color" content="#287fbc" />
   <meta name="description" content="An independent functional NaTIS administration UI demo using supplied RTMC visual references. All data is synthetic; not an official service." />
   <title>NaTIS | Administration Workspace — UI Demo</title>
   <link rel="icon" type="image/png" href="assets/brand/rtmc-logo.png" />
@@ -15,12 +15,13 @@
     <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
       <div class="brand">
         <div class="brand-logo-wrap"><img src="assets/brand/natis-wordmark.png" alt="NaTIS — National Traffic Information System" class="brand-logo" /></div>
-        <div class="brand-copy"><strong>Operations</strong><span>ADMIN UI DEMO</span></div>
+        <div class="brand-copy"><strong>Administration</strong><span>ADMIN UI DEMO</span></div>
         <button class="sidebar-close icon-button" id="closeSidebar" aria-label="Close navigation">×</button>
       </div>
       <div class="workspace-chip"><span class="green-dot"></span><span>Evaluation environment · Synthetic data</span></div>
       <nav id="sideNav"></nav>
       <div class="sidebar-bottom">
+        <div class="rtmc-sidebar-badge"><img src="assets/brand/rtmc-logo.png" alt="RTMC reference logo" /><span>Road Traffic Management Corporation<br>Brand reference · UI prototype</span></div>
         <div class="sidebar-assist"><div class="assist-icon">?</div><div><strong>Prototype support</strong><span>Documentation & scope</span></div></div>
         <div class="operator"><div class="avatar">AD</div><div class="operator-info"><strong>Admin Demo</strong><span>Sample administrator</span></div><span class="operator-ellipsis">•••</span></div>
       </div>
@@ -29,7 +30,7 @@
       <header class="topbar">
         <div class="top-left">
           <button id="menuToggle" class="icon-button mobile-menu" aria-label="Open menu">☰</button>
-          <span class="breadcrumb-root">NaTIS administration</span><span class="breadcrumb-divider">/</span><span id="breadcrumbCurrent" class="breadcrumb-current">Overview</span>
+          <span class="breadcrumb-root">NaTIS Online Services</span><span class="breadcrumb-divider">/</span><span id="breadcrumbCurrent" class="breadcrumb-current">Overview</span>
         </div>
         <div class="top-right">
           <div class="search-container"><span class="search-icon" aria-hidden="true">⌕</span><input id="globalSearch" type="search" autocomplete="off" aria-label="Search this view" placeholder="Search this view..." /><kbd>⌘ K</kbd></div>
@@ -39,7 +40,7 @@
         </div>
       </header>
       <div class="page-wrap"><div id="pageContent"></div></div>
-      <footer class="app-footer"><span>NaTIS Admin UI · Demonstration build · Branding supplied for review</span><span>NOT AN OFFICIAL SERVICE · Synthetic records · No government connection</span></footer>
+      <footer class="app-footer"><span>NaTIS Administration · Design prototype · Public portal visual reference</span><span>NOT AN OFFICIAL SERVICE · Synthetic records · No government connection</span></footer>
     </main>
   </div>
   <div id="toastStack" class="toast-stack" aria-live="polite"></div>
