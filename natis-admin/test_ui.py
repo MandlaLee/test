@@ -1,5 +1,5 @@
 from pathlib import Path
-import json, shutil
+import json, shutil, re
 from playwright.sync_api import sync_playwright
 root=Path(__file__).resolve().parent
 results=[]
@@ -13,7 +13,8 @@ with sync_playwright() as p:
     page.on('pageerror',lambda e:errors.append(str(e)))
     def mount(pg):
         html=(root/'index.html').read_text().replace('<link rel="stylesheet" href="./styles.css" />','').replace('<script src="./app.js"></script>','')
-        pg.set_content(html,wait_until='load')
+        html=re.sub(r'<img src="https://www\.rtmc\.co\.za[^>]+>', '', html)
+        pg.set_content(html,wait_until='domcontentloaded')
         pg.add_style_tag(content=(root/'styles.css').read_text().split('\n',1)[1])
         pg.add_script_tag(content=(root/'app.js').read_text())
     page.add_script_tag(content="Object.defineProperty(window,'localStorage',{value:(()=>{const d={};return{getItem:k=>d[k]||null,setItem:(k,v)=>d[k]=v};})()});")
