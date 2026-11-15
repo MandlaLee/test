@@ -1,6 +1,6 @@
 # Road Services / NaTIS-inspired Admin Workspace — UI prototype
 
-This is an **independent, fictional administration UI concept** inspired by the public NaTIS online portal's South African government blue/green visual language. It is not an official RTMC/NaTIS product, does not impersonate the official website, and has **no access** to government systems. The original NaTIS mark, typefaces and official asset library have **not** been supplied or reproduced; brand alignment must be approved by the commissioning team before production use.
+This is an **independent, fictional administration UI concept** inspired by the public NaTIS online portal's South African government blue/green visual language. It is not an official RTMC/NaTIS product, does not impersonate the official website, and has **no access** to government systems. The original NaTIS mark, verified typefaces and official asset library have **not** been supplied or reproduced; brand alignment must be approved by the commissioning team before production use.
 
 ## Run locally
 
@@ -35,6 +35,10 @@ For phase 2, use a properly reviewed authentication provider, session controls a
 4. Restore seed data and verify the database resets as expected.
 5. Obtain official approved logos, fonts, icons and brand palette from the commissioning team, then replace placeholder wordmark styling.
 6. Agree on roles, fields, workflow states, backend endpoints and access/privacy requirements before connecting data.
+
+## Automated checks
+
+With Python 3.10+, run `python3 -m pip install playwright`, `python3 -m playwright install chromium`, then `python3 test_ui.py`. The 10 Playwright checks mount the local HTML/CSS/JS into an isolated browser document (network navigation is restricted in the test environment) and exercise navigation, filtering, editing, creating records, exporting CSV, mobile layout and error-free execution. The local-storage mock is in-memory for test isolation; production browser persistence was not verified against any server.
 
 ## Source inspiration
 
