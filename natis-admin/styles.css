@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 :root{color-scheme:light;--navy:#10233d;--navy2:#0b1c33;--navy3:#16314f;--ink:#142239;--sub:#728096;--border:#e5eaf0;--panel:#fff;--bg:#f5f7fb;--blue:#2572ce;--green:#07956e;--green2:#e9f8f1;--amber:#d08b18;--red:#c94b53;--shadow:0 8px 28px rgba(24,44,72,.035);--radius:15px}
 *{box-sizing:border-box}html,body{padding:0;margin:0;min-height:100%;font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--ink);background:var(--bg)}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #95c6fd;outline-offset:2px}
 .app-shell{display:flex;min-height:100vh}.sidebar{width:257px;flex:0 0 257px;min-height:100vh;background:var(--navy);color:#d8e3ef;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;z-index:15;padding:25px 13px 15px}.brand{display:flex;align-items:center;gap:12px;padding:2px 11px 21px}.brand-emblem{width:41px;height:41px;border-radius:12px;background:#e5f7f1;display:flex;gap:5px;align-items:center;justify-content:center;transform:rotate(-5deg)}.brand-emblem span{height:22px;width:5px;border-radius:4px;background:#138765;transform:skewX(-13deg)}.brand-emblem span:nth-child(2){height:29px;background:#1e7bb5}.brand-emblem span:nth-child(3){height:16px}.brand-copy{display:flex;flex-direction:column;gap:2px;min-width:0}.brand-copy strong{font-family:'Plus Jakarta Sans',sans-serif;color:#fff;font-size:15px;letter-spacing:-.55px}.brand-copy>span{color:#8ca2b7;letter-spacing:2.15px;font-size:9px;font-weight:800}.workspace-chip{display:flex;align-items:center;gap:8px;padding:11px 13px;background:#193552;border:1px solid #2b4560;border-radius:9px;margin:0 8px 22px;color:#b9d1e1;font-size:11px;font-weight:600}.green-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#45dfac;box-shadow:0 0 0 3px #2a5e56}.nav-group{margin-bottom:21px}.nav-group-label{font-size:10px;letter-spacing:1.65px;color:#718ca5;padding:0 15px;margin:0 0 8px;font-weight:800}.nav-link{border:0;width:100%;padding:11px 13px;color:#a9bdd0;display:flex;align-items:center;gap:12px;background:transparent;text-align:left;border-radius:9px;font-size:12px;font-weight:600;position:relative;transition:background .15s,color .15s}.nav-link svg{width:17px;height:17px;opacity:.92}.nav-link:hover{background:#1c3854;color:#fff}.nav-link.active{background:#1d3a56;color:#fff}.nav-link.active:before{content:'';position:absolute;left:0;top:10px;bottom:10px;width:3px;background:#51d6a8;border-radius:2px}.nav-link .count{margin-left:auto;border-radius:5px;background:#28506d;font-size:10px;color:#d0e5f4;padding:3px 7px}.sidebar nav{overflow-y:auto;padding-bottom:12px;scrollbar-width:thin;scrollbar-color:#33506a transparent}.sidebar-bottom{margin-top:auto;padding-top:10px;border-top:1px solid #2b3d53}.sidebar-assist{display:flex;gap:11px;align-items:center;padding:14px 10px}.assist-icon{border:1px solid #38546e;width:29px;height:29px;border-radius:8px;display:grid;place-items:center;font-weight:800;color:#9cb9cc}.sidebar-assist strong,.operator strong{display:block;font-size:11px;color:#e2ebf4}.sidebar-assist span,.operator span{display:block;font-size:10px;color:#8a9fb3;margin-top:4px}.operator{padding:12px 10px;display:flex;align-items:center;gap:10px;background:#1b334d;border-radius:10px}.avatar,.top-avatar{background:linear-gradient(150deg,#38bfa4,#217aac);color:white;width:31px;height:31px;display:grid;place-items:center;border-radius:9px;font-size:11px;font-weight:800}.operator-ellipsis{margin-left:auto}.sidebar-close{display:none}
@@ -44,3 +44,46 @@
 
 /* Reference the public RTMC-hosted NaTIS mark when accessible; fallback is the built-in abstract icon. */
 .brand-emblem{position:relative;overflow:hidden}.brand-emblem img{position:absolute;inset:2px;width:calc(100% - 4px);height:calc(100% - 4px);object-fit:contain;background:#fff;border-radius:7px}
+
+/* v2 — supplied NaTIS/RTMC brand assets and source-backed resource library */
+:root{--navy:#143f71;--navy2:#12315a;--navy3:#205a92;--blue:#237fbd;--green:#62a43a;--green2:#edf8e8;--purple:#7c278d}
+body{font-family:Arial,Helvetica,sans-serif;}
+.sidebar{background:linear-gradient(180deg,#225e97 0%,#164676 52%,#10355e 100%)}
+.sidebar .brand{gap:10px;padding-bottom:20px}
+.brand-emblem{background:rgba(255,255,255,.94)!important;transform:none!important;overflow:hidden!important;width:44px!important;height:44px!important;border-radius:10px!important;padding:4px}
+.brand-emblem>span{display:none!important}
+.brand-emblem img.brand-rtmc{position:static!important;display:block!important;object-fit:contain!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;opacity:1!important;transform:none!important}
+.brand-copy strong{font-family:Georgia,'Times New Roman',serif;color:#fff;font-size:24px;font-weight:500;letter-spacing:-.9px}
+.brand-copy>span{font-family:Arial,sans-serif;color:#d0e3f4;letter-spacing:1.05px;font-size:7px}
+.workspace-chip{background:rgba(255,255,255,.085);border-color:#ffffff22}
+.nav-link.active{background:#ffffff17;border-left-color:#a2cc40}
+.nav-link.active:before{background:#a2cc40}
+.topbar{border-top:5px solid #8b348f;background:#fff}
+.page-wrap{position:relative}
+.masthead-accent{height:5px;background:linear-gradient(90deg,#892991 0%,#8e3598 42%,#2b86c2 42%,#2b86c2 100%);border-radius:6px;margin:-23px 0 27px}
+.page-eyebrow{color:#7b348f}
+.btn.primary{background:#1f78b1;border-color:#1f78b1}
+.btn.primary:hover{background:#165e90}
+.status.completed,.status.resolved,.status.paid{background:#eaf5e7;color:#41832c}
+.proto-note{background:#f1f7fd;color:#305e84;border-color:#dcebf5}
+.overview-brand-band{display:flex;align-items:center;justify-content:space-between;gap:30px;background:linear-gradient(100deg,#eff6ff,#f7faf9);border:1px solid #dce8f2;border-radius:14px;padding:17px 25px;margin:0 0 22px;min-height:125px}
+.overview-brand-left span,.reference-eyebrow{font-size:9px;letter-spacing:1.6px;font-weight:800;color:#7b348f;display:block;margin-bottom:8px}
+.overview-brand-left strong{font-size:18px;color:#1d456d;display:block;margin-bottom:7px}
+.overview-brand-left p{font-size:11px;color:#66809a;line-height:1.5;margin:0}
+.overview-brand-band img{object-fit:contain;max-width:135px;max-height:98px}
+.brand-action{background:none;border:0;padding:0;color:#267eb8;font-weight:800;margin-top:11px;font-size:11px;display:inline-flex;align-items:center;gap:8px}
+.reference-hero{border:1px solid #e2ebf2;background:linear-gradient(105deg,#eff7fc,#fff);border-radius:16px;padding:25px 30px;margin-bottom:24px;display:flex;align-items:center;gap:35px;justify-content:space-between}
+.reference-hero h2{margin:0;color:#153f67;font-size:21px;font-weight:700;letter-spacing:-.4px;line-height:1.35}
+.reference-hero p{color:#698197;font-size:12px;line-height:1.6;max-width:550px}
+.reference-hero img{width:118px;max-height:105px;object-fit:contain}
+.resource-filter{display:flex;justify-content:space-between;align-items:center;gap:18px;margin:0 0 18px}.resource-filter .search-field{max-width:390px}.resource-filter>span{color:#78899a;font-size:11px}
+.resource-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.resource-card{display:flex;flex-direction:column;background:#fff;border:1px solid #e0e8ef;box-shadow:0 7px 22px #173a5810;border-radius:14px;padding:22px;min-height:235px}
+.resource-card-top{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-bottom:14px}.resource-card-top img{width:45px;height:42px;object-fit:contain}.resource-card-top span{font-size:10px;color:#7c448b;background:#f9effa;padding:5px 9px;border-radius:7px}
+.resource-card h3{font-size:15px;color:#203c58;margin:0 0 9px}.resource-card>p{font-size:11px;color:#788ca1;line-height:1.65;margin:0 0 18px;flex:1}
+.resource-bottom{display:flex;align-items:end;justify-content:space-between;gap:10px}.resource-bottom span{font-size:9px;color:#96a4b2;max-width:58%}.resource-bottom button,.campaign-card button{border:0;background:none;color:#1f79b4;font-size:11px;font-weight:800;display:flex;gap:4px;align-items:center;white-space:nowrap}
+.reference-summary{font-size:12px;line-height:1.7;color:#526b81}.modal-subtitle{font-size:13px;margin:23px 0 11px;color:#244d72}.reference-checklist{padding:0;list-style:none;margin:0}.reference-checklist li{display:flex;gap:9px;align-items:flex-start;font-size:12px;padding:10px 0;color:#415972;border-bottom:1px solid #eef1f4}.reference-checklist svg{color:#609e3c;flex-shrink:0}.reference-privacy{font-size:10px;color:#8b9eae;line-height:1.6;margin-top:18px}
+.archive-warning{border:1px solid #f3dfbc;background:#fffaf2;color:#85693d;padding:14px 16px;border-radius:11px;margin-bottom:22px;font-size:11px;line-height:1.6;display:flex;gap:10px;align-items:center}
+.campaign-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:21px}.campaign-card{border-radius:14px;overflow:hidden;background:#fff;border:1px solid #e2e8ef;box-shadow:0 8px 22px #234a6910}.campaign-thumb{aspect-ratio:16/7.2;display:flex;align-items:center;justify-content:center;background:#f0f6fa}.campaign-thumb img{width:100%;height:100%;object-fit:cover}.campaign-card-body{padding:19px 21px}.campaign-card-body strong{color:#233f5c;font-size:14px}.campaign-card-body p{font-size:11px;color:#7f91a2;line-height:1.6}.campaign-card button{padding:0;margin-top:13px}.campaign-preview{display:block;width:100%;max-height:350px;object-fit:contain;background:#edf3f7;border-radius:9px}
+@media(max-width:1100px){.resource-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.resource-grid,.campaign-grid{grid-template-columns:1fr}.reference-hero{padding:20px}.reference-hero img{width:65px}.overview-brand-band img{max-width:72px}.resource-filter{align-items:start;flex-direction:column}.resource-filter .search-field{width:100%;max-width:none}.masthead-accent{margin-top:-18px}}
