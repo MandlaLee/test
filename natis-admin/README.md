@@ -1,48 +1,32 @@
-# Road Services / NaTIS-inspired Admin Workspace — UI prototype
+# NaTIS / RTMC Admin UI — Prototype v2
 
-This is an **independent, fictional administration UI concept** inspired by the public NaTIS online portal's South African government blue/green visual language. It is not an official RTMC/NaTIS product, does not impersonate the official website, and has **no access** to government systems. The small public NaTIS mark is referenced (not bundled) from `https://www.rtmc.co.za/images/rtmc/logo/NaTIS_Logo_small.png`; verified typefaces and a full official brand asset library have **not** been supplied; brand alignment must be approved by the commissioning team before production use.
+**Client-commissioned UI demonstration — not an official RTMC/NaTIS administration portal.** All data is synthetic, all administrative actions are browser-only, and there is no login, government API, payment processing or Google Apps Script connection.
 
-## Run locally
+## Open the UI
 
-Open `index.html` in a modern browser, or run `python3 -m http.server 8080` in this folder, then open http://localhost:8080.
+- **Main entry:** `index.html` — forwards to the fully working, single-file `standalone.html`.
+- **Best for review:** download and open `standalone.html` in a browser. The CSS, JavaScript, RTMC emblem, icons and campaign artwork are embedded; **no network or image server is required**.
+- The previous `app.js` and `styles.css` source files remain in this development branch as phase-1 modular references. **The v2 canonical implementation is `standalone.html`**, which now carries the new branding and navigation.
+- Complete modular source, individual source artwork, original supplied PDFs and screenshots are included in the separate local handoff ZIP delivered with this change.
 
-## What works in phase 1
+## 14 functional sections
 
-- Twelve responsive dashboard routes with hash-based deep links, including Overview, Applications, Appointments, Vehicle renewals, DLTC & slots, Citizen profiles, Payments, Accident reports, Reports, Team & access, Activity log, Settings.
-- Search, per-table status filtering and records detail dialogs.
-- Locally update demo record statuses, appointment times and DLTC slot capacity.
-- Create sample appointments, centres and operator profiles.
-- Download synthetic CSV datasets, view activity logs, reset demo data, adjust settings.
-- Persist demonstration changes in browser `localStorage`; no API calls, real credentials, or real identities.
-- Keyboard shortcuts: Cmd/Ctrl+K for search and Escape to close dialogs; mobile navigation included.
+Overview · Applications · Appointments · Vehicle renewals · DLTC & slots · Citizen profiles · Payments · Accident reports · **Forms & manuals** · **Campaign artwork** · Reports & analytics · Team & access · Activity log · Settings.
 
-## Not yet implemented (phase 2 and beyond)
+The **Forms & manuals** library contains eight source-backed guides: LL1, DL1, PD1, MC, Rules of the Road, Road Traffic Signs, Vehicle Controls and the supplied RTMC POPI disclaimer. The **Campaign artwork** page displays six supplied images as **archived reference artwork, not current public notices**.
 
-- **No login**. Google Apps Script and Google Sheets integration is intentionally postponed.
-- No real RTMC or NaTIS API, authorisation rules, data validation, billing, payment capture or automated messaging.
-- No actual email invites or permission enforcement (role matrix is a design proposal).
-- Reports use illustrative local sample data; metrics are not official statistics.
+## Functional demo capabilities
 
-## Planned secure integrations
+Hash-route navigation, mobile drawer, sample case-status updates, appointment creation/editing, centre-capacity editing, demo operator creation, table search/filters, CSV export, audit log, reset, localStorage persistence, eight reference guide dialogs, six campaign preview dialogs, keyboard search shortcut.
 
-For phase 2, use a properly reviewed authentication provider, session controls and server-side authorisation. Do not store passwords in Google Sheets. If Sheets is used for low-risk test fixtures or metadata, limit scopes, protect access and avoid storing full SA IDs or other unnecessary personal information. An authorised NaTIS database integration needs contracts, a secure backend/API gateway, audit logging and POPIA compliance review; never expose government database credentials to browser JavaScript or Apps Script published as a public web app.
+## Test evidence
 
-## Suggested handoff / test plan
+The original ten interaction checks passed. Additional Playwright checks passed **19/19**, including navigation through all 14 routes, source-backed form guides, campaign-image rendering, mobile layout and no browser JavaScript exceptions. An additional smoke test verified the 1.5 MB standalone file opens and renders its embedded art without HTTP access.
 
-1. Review page navigation at desktop and mobile widths and the sidebar/menu focus behaviour.
-2. Open each table, filter/search it, update a demo record and reload to confirm local persistence.
-3. Create a booking, centre and team operator; check activity log and CSV exports.
-4. Restore seed data and verify the database resets as expected.
-5. Obtain official approved logos, fonts, icons and brand palette from the commissioning team, then replace placeholder wordmark styling.
-6. Agree on roles, fields, workflow states, backend endpoints and access/privacy requirements before connecting data.
+## Handoff and security
 
-## Automated checks
+Client brand rights, official typefaces, current operational notices and data contracts require approval by the commissioning team. No real personal data or government credentials should be used in this demo. In phase 2, Google Apps Script and Sheets may be used solely for secured, low-risk synthetic test fixtures; do not store passwords in Sheets, nor expose RTMC/NaTIS credentials in client-side code. Real deployment requires independently implemented authentication, access controls, audit logging and POPIA review.
 
-With Python 3.10+, run `python3 -m pip install playwright`, `python3 -m playwright install chromium`, then `python3 test_ui.py`. The 10 Playwright checks mount the local HTML/CSS/JS into an isolated browser document (network navigation is restricted in the test environment) and exercise navigation, filtering, editing, creating records, exporting CSV, mobile layout and error-free execution. The local-storage mock is in-memory for test isolation; production browser persistence was not verified against any server.
+The PDF source documents and original image files supplied by the client were **not uploaded to this public repository**; only art embedded for prototype visual review is present. The uploaded Gauteng High Court order is outside the product workflow and has not been published.
 
-## Source inspiration
-
-- https://online.natis.gov.za/#/
-- https://www.gcis.gov.za/guidelines/website/common-look-feel
-
-Independent concept; all records synthetic.
+Version: 2.0.0 — 15 November 2026.
