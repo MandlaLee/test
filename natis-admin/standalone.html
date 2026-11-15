@@ -51,6 +51,9 @@
 /* NaTIS purple wordmark accent inspired by the public portal */
 .brand-copy strong{color:#f3f8ff}.brand-copy strong:first-letter{color:#c9a0d2}.workspace-chip{border-color:#386a88;background:#205378}.sidebar .brand:after{content:'UI';color:#ab7aaf;font-size:10px;font-weight:800;border:1px solid #ab7aaf;border-radius:5px;padding:3px 5px;margin-left:auto}.brand-copy>span{letter-spacing:1.03px}
 
+/* Reference the public RTMC-hosted NaTIS mark when accessible; fallback is the built-in abstract icon. */
+.brand-emblem{position:relative;overflow:hidden}.brand-emblem img{position:absolute;inset:2px;width:calc(100% - 4px);height:calc(100% - 4px);object-fit:contain;background:#fff;border-radius:7px}
+
 </style>
 </head>
 <body>
@@ -58,7 +61,7 @@
     <div class="mobile-shade" id="shade"></div>
     <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
       <div class="brand">
-        <span class="brand-emblem" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="brand-emblem" aria-hidden="true"><span></span><span></span><span></span><img src="https://www.rtmc.co.za/images/rtmc/logo/NaTIS_Logo_small.png" alt="" onerror="this.remove()" /></span>
         <div class="brand-copy"><strong>NaTIS</strong><span>ADMIN UI PROTOTYPE</span></div>
         <button class="sidebar-close icon-button" id="closeSidebar" aria-label="Close navigation">×</button>
       </div>
