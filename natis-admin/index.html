@@ -1,48 +1,15 @@
 <!DOCTYPE html>
 <html lang="en-ZA">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#0b1930" />
-  <meta name="description" content="An independent, fictional admin-console prototype for road-traffic online services. Not affiliated with NaTIS or the RTMC." />
-  <title>NaTIS Admin UI — Independent Prototype</title>
-  <link rel="stylesheet" href="./styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#225e97">
+  <meta name="description" content="Unofficial, demo-only NaTIS / RTMC admin interface concept. All records are fictional.">
+  <title>NaTIS Admin UI — Prototype v2</title>
+  <meta http-equiv="refresh" content="0; url=./standalone.html">
 </head>
 <body>
-  <div class="app-shell" id="appShell">
-    <div class="mobile-shade" id="shade"></div>
-    <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
-      <div class="brand">
-        <span class="brand-emblem" aria-hidden="true"><span></span><span></span><span></span><img src="https://www.rtmc.co.za/images/rtmc/logo/NaTIS_Logo_small.png" alt="" onerror="this.remove()" /></span>
-        <div class="brand-copy"><strong>NaTIS</strong><span>ADMIN UI PROTOTYPE</span></div>
-        <button class="sidebar-close icon-button" id="closeSidebar" aria-label="Close navigation">×</button>
-      </div>
-      <div class="workspace-chip"><span class="green-dot"></span><span>UI development sandbox</span></div>
-      <nav id="sideNav"></nav>
-      <div class="sidebar-bottom">
-        <div class="sidebar-assist"><div class="assist-icon">?</div><div><strong>Prototype support</strong><span>Documentation & scope</span></div></div>
-        <div class="operator"><div class="avatar">AD</div><div class="operator-info"><strong>Admin Demo</strong><span>Sample administrator</span></div><span class="operator-ellipsis">•••</span></div>
-      </div>
-    </aside>
-    <main class="main-area">
-      <header class="topbar">
-        <div class="top-left">
-          <button id="menuToggle" class="icon-button mobile-menu" aria-label="Open menu">☰</button>
-          <span class="breadcrumb-root">Workspace</span><span class="breadcrumb-divider">/</span><span id="breadcrumbCurrent" class="breadcrumb-current">Overview</span>
-        </div>
-        <div class="top-right">
-          <div class="search-container"><span class="search-icon" aria-hidden="true">⌕</span><input id="globalSearch" type="search" autocomplete="off" aria-label="Search this view" placeholder="Search this view..." /><kbd>⌘ K</kbd></div>
-          <div class="header-date" id="headerDate"></div>
-          <button id="notificationsButton" class="icon-button notifications-button" title="View demo notifications" aria-label="Notifications"><span id="notificationIcon"></span><i></i></button>
-          <div class="top-avatar" title="Sample administrator">AD</div>
-        </div>
-      </header>
-      <div class="page-wrap"><div id="pageContent"></div></div>
-      <footer class="app-footer"><span>NaTIS-inspired Admin UI — Independent concept prototype</span><span>All records are synthetic · No live NaTIS connection</span></footer>
-    </main>
-  </div>
-  <div id="toastStack" class="toast-stack" aria-live="polite"></div>
-  <div id="modalLayer"></div>
-  <script src="./app.js"></script>
+  <p>Opening the <a href="./standalone.html">NaTIS Admin UI demonstration</a> (no login or live government system).</p>
+  <script>location.replace("./standalone.html"+(location.hash||"#/overview"))</script>
 </body>
 </html>
