@@ -139,7 +139,7 @@ html,body {background:#e9e9e9;color:var(--ink);font-size:14px}
 .brand-logo{height:48px;object-fit:contain;object-position:left center}
 .brand-copy strong{color:#234e78;font-weight:700;font-size:14px}
 .brand-copy>span{color:#728297;font-size:9px;letter-spacing:1.25px}
-.sidebar .brand:after{content:'DEMO';background:#f4f7fb;color:#4b6d8b;border:1px solid #dde5ed;font-size:8px;letter-spacing:1px;padding:5px 6px;margin-left:auto;border-radius:3px}
+.sidebar .brand:after{content:'PREVIEW';background:#f4f7fb;color:#4b6d8b;border:1px solid #dde5ed;font-size:8px;letter-spacing:1px;padding:5px 6px;margin-left:auto;border-radius:3px}
 .workspace-chip{background:#eef8f0;border:1px solid #d3e5d7;color:#28644d;border-radius:5px;margin:0 7px 22px;font-size:10px}
 .green-dot{background:#72ad37;box-shadow:0 0 0 3px #dcefc9}
 .nav-group-label{color:#6b8299;font-weight:700;letter-spacing:1.2px;font-size:10px}
@@ -198,3 +198,13 @@ a:not(.btn){text-underline-offset:3px}
 @media(max-width:1040px){.topbar{height:70px;flex-basis:70px}}
 @media(max-width:800px){.sidebar{box-shadow:12px 0 32px rgba(29,45,62,.14)}.topbar{height:69px;flex-basis:69px}}
 @media(max-width:560px){.brand-logo{height:44px}.rtmc-sidebar-badge{padding:10px}.page-wrap{padding:25px 15px}.topbar{border-bottom-width:3px}}
+/* Unconnected operational environment: do not suggest real counts. */
+.blank-dashboard,.clean-empty{min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;text-align:center;padding:30px 24px;color:#60748a}
+.blank-dashboard svg,.clean-empty svg{color:#4387ad;opacity:.7}
+.blank-dashboard strong,.clean-empty strong{font-size:15px;color:#294c6b}
+.blank-dashboard p,.clean-empty p{font-size:12px;line-height:1.7;max-width:310px;margin:0;color:#687f93}
+.blank-dashboard button,.clean-empty button{margin-top:7px;font-weight:600}
+.kpi-value{font-variant-numeric:tabular-nums}
+.btn:disabled{opacity:.55;cursor:not-allowed;box-shadow:none}
+.table-head .badge-demo{background:#ecf2f6;color:#466b89;border:1px solid #d7e4ec}
+@media(max-width:560px){.blank-dashboard,.clean-empty{min-height:170px;padding:22px 14px}}
