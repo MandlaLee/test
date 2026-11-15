@@ -1,6 +1,6 @@
 # Road Services / NaTIS-inspired Admin Workspace — UI prototype
 
-This is an **independent, fictional administration UI concept** inspired by the public NaTIS online portal's South African government blue/green visual language. It is not an official RTMC/NaTIS product, does not impersonate the official website, and has **no access** to government systems. The original NaTIS mark, verified typefaces and official asset library have **not** been supplied or reproduced; brand alignment must be approved by the commissioning team before production use.
+This is an **independent, fictional administration UI concept** inspired by the public NaTIS online portal's South African government blue/green visual language. It is not an official RTMC/NaTIS product, does not impersonate the official website, and has **no access** to government systems. The small public NaTIS mark is referenced (not bundled) from `https://www.rtmc.co.za/images/rtmc/logo/NaTIS_Logo_small.png`; verified typefaces and a full official brand asset library have **not** been supplied; brand alignment must be approved by the commissioning team before production use.
 
 ## Run locally
 
