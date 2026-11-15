@@ -62,3 +62,12 @@ GitHub contains all 25 supplied production-facing assets used by the UI: 2 logos
 `standalone.html` embeds the logos, illustrations and campaign photos directly, allowing the UI screens to render without the asset image folder. **PDF reference links still require the adjacent `assets/documents` folder.** For full use, open `index.html` from the extracted ZIP or a locally served folder, rather than moving `standalone.html` away from its documents.
 
 The visual identity uses supplied materials solely for the commissioned prototype; appearance does not establish official endorsement or operational access. This public repository should be reviewed by the commissioning organisation for trademark/copyright permissions and document distribution rules before sharing widely.
+
+
+## Branding alignment — public NaTIS page captures (15 Nov 2026)
+
+The November branding refresh uses four user-provided static captures of the NaTIS public homepage, login, and FAQ pages as visual references, rather than reusing website source code. The admin workspace now follows that public portal’s blue-gradient header, white navigation, light-grey backgrounds, Open Sans typography, green action buttons and RTMC/NaTIS logos (uploaded by the commissioning party). The original work was an independent UI concept, and the prototype remains synthetic-data-only, not officially authorised or connected to RTMC/NaTIS systems.
+
+**Source observations:** homepage header blue gradient, white navigation and cards, green CTA; login and FAQ grey background/white panels; `--green: #2dce89`, `--blue: #2779b8`, typography Open Sans; contrast-adjusted button text for accessibility.
+
+The original ZIP captures are **reference material only**, not included or published. Authentication and official database integrations remain out of scope for Phase 1.
