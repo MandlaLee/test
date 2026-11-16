@@ -64,7 +64,7 @@
   function navigate(target){if(!nav.flatMap(g=>g.items).some(i=>i[0]===target))target='overview';page=target;query='';filter='all';pageIndex=0;$('#globalSearch').value='';location.hash=`/${target}`;draw();$('#appShell').classList.remove('nav-open');$('#menuToggle').setAttribute('aria-expanded','false');window.scrollTo(0,0);}
   function navHtml(){return nav.map(g=>`<section class="nav-group"><p class="nav-group-label">${g.group}</p>${g.items.map(([id,label,ic])=>`<button class="nav-link ${page===id?'active':''}" data-nav="${id}" aria-current="${page===id?'page':'false'}">${icon(ic)}<span>${label}</span></button>`).join('')}</section>`).join('');}
   const head=(eyebrow,title,desc='',actions='')=>`<div class="page-header"><div><div class="page-eyebrow">${eyebrow}</div><h1>${title}</h1><p>${desc}</p></div>${actions?`<div class="header-actions">${actions}</div>`:''}</div>`;
-  const note=()=>`<div class="proto-note">${icon('info',16)}<span><strong>UI PREVIEW · NO DATA SOURCE</strong> — This interface has no imported records, active account, authentication, or connection to government services. All operational screens will remain empty until approved data integration.</span></div>`;
+  const note=()=>`<div class="proto-note">${icon('info',16)}<span><strong>${window.NaTISData?.isConnected()?'SUPABASE CONNECTED · PRIVATE PROJECT':'MASTER ACCESS REQUIRED'}</strong> — ${window.NaTISData?.isConnected()?'Data is loaded from the designated Supabase project under master-only row security. No official government database is connected.':'Records and uploads remain unavailable until the approved master administrator signs in.'}</span></div>`;
   const btn=(label,action,kind='')=>`<button class="btn ${kind}" data-action="${action}">${label}</button>`;
   const kpi=(label,value,delta,ic,kind='')=>`<article class="kpi"><div class="kpi-top"><span class="kpi-label">${label}</span><span class="kpi-icon ${kind}">${icon(ic,18)}</span></div><div class="kpi-value">${value}</div><div class="kpi-foot"><span class="trend">${delta}</span></div></article>`;
   const panel=(title,subtitle,inner,extra='')=>`<section class="panel"><div class="panel-header"><div><h2 class="panel-title">${title}</h2>${subtitle?`<p class="panel-subtitle">${subtitle}</p>`:''}</div>${extra}</div><div class="panel-content">${inner}</div></section>`;
@@ -73,7 +73,7 @@
   const field=(label,name,value='',type='text',opts='')=>`<div class="form-field"><label for="f_${name}">${label}</label>${type==='select'?`<select id="f_${name}" name="${name}">${opts.split('|').map(x=>`<option ${x===value?'selected':''}>${h(x)}</option>`).join('')}</select>`:`<input id="f_${name}" name="${name}" type="${type}" value="${h(value)}" required />`}</div>`;
   const filterTool=(placeholder,statuses)=>`<div class="table-tools"><label class="search-field"><span>${icon('search',14)}</span><input class="input" id="localQuery" value="${h(query)}" aria-label="Search records" placeholder="${placeholder}" autocomplete="off"/></label><select class="select" id="statusFilter" aria-label="Filter by status"><option value="all">All statuses</option>${statuses.map(x=>`<option value="${h(x)}" ${filter===x?'selected':''}>${h(x)}</option>`).join('')}</select></div>`;
   const match=r=>Object.values(r).some(v=>String(v).toLowerCase().includes(query.toLowerCase())) && (filter==='all'||r.status===filter);
-  const exportButton=key=>`<button class="btn" disabled title="Export will be available after an approved data connection" aria-label="Export ${h(key)}: data source not connected">${icon('download',15)} Export CSV</button>`;
+  const exportButton=key=>`<button class="btn" disabled title="Data exports are disabled pending approved privacy and retention policy" aria-label="Export disabled for ${h(key)}">${icon('download',15)} Export CSV</button>`;
   // Only publicly oriented documents supplied for this demo are listed here. No scanned applicant data.
   const resources = [
     {id:'LL1',title:'Learner\u2019s licence application',type:'Application form',category:'forms',description:'LL1 application and duplicate request; applicant particulars, vehicle class and declarations.',file:'learner-licence-LL1.pdf',icon:'learner'},
@@ -125,7 +125,7 @@
     function recordsPage(key,eyebrow,title,description,cols,statuses){
     const rows=state[key].filter(match);
     return head(eyebrow,title,description,exportButton(key))+note()+
-      `<section class="panel table-panel"><div class="table-head"><div><h2>${title} register</h2><p>Waiting for an authorised data source</p></div><span class="badge-demo">NOT CONNECTED</span></div>${filterTool('Search records when connected...',statuses)}${table(cols,rows,key)}<div class="table-footer"><span>Data source: not connected</span><span>0 imported records</span></div></section>`;
+      `<section class="panel table-panel"><div class="table-head"><div><h2>${title} register</h2><p>${window.NaTISData?.isConnected()?'Private Supabase database':'Waiting for master sign-in'}</p></div><span class="badge-demo">${window.NaTISData?.isConnected()?'CONNECTED':'NOT CONNECTED'}</span></div>${filterTool('Search records when connected...',statuses)}${table(cols,rows,key)}<div class="table-footer"><span>${window.NaTISData?.isConnected()?'Supabase · master only':'Data source: locked'}</span><span>${rows.length} accessible records</span></div></section>`;
   }
     function appointments(){return `<div class="small-cards">${stat('Confirmed','—','Data unavailable')}${stat('Awaiting confirmation','—','Data unavailable')}${stat('Cancelled','—','Data unavailable')}</div>`+recordsPage('appointments','BOOKING OPERATIONS','Appointments','Browse test bookings and licence-card renewal appointments when connected.',[['Booking ID','id'],['Applicant','name'],['Service','service'],['Centre','centre'],['Date','date',prettyDate],['Time','time'],['Status','status',status]],['Confirmed','Pending','Cancelled']);}
     function centres(){return head('SERVICE NETWORK','DLTC & available slots','Centre details and appointment capacity will appear after your integration is configured.')+note()+
@@ -153,6 +153,7 @@
     $('#portalIntro').innerHTML=home?'<p class="portal-intro-lead">Use the provided links to either book an appointment, register as a road traffic user<br class="intro-desktop-break" /> or; report a minor crash.</p><p class="portal-intro-sub">To access some of these services log in OR register a profile</p>':`<p class="portal-intro-lead">${h(routeLabel(page))}</p><p class="portal-intro-sub">Administration workspace · No connected records</p>`;
     $('#menuToggle').setAttribute('aria-expanded',$('#appShell').classList.contains('nav-open')?'true':'false');
     $('#pageContent').innerHTML=(pages[page]||overview)();
+     window.NaTISData?.decorate(page);
     if(state.settings.compact)document.body.classList.add('compact');else document.body.classList.remove('compact');
     $('#headerDate').textContent=new Date().toLocaleDateString('en-ZA',{day:'2-digit',month:'short',year:'numeric'});
   }
@@ -175,6 +176,6 @@
   $('#notificationsButton').addEventListener('click',()=>toast('Notifications are unavailable until an authenticated service is connected.'));
   $('#loginPreviewButton').addEventListener('click',()=>toast('Login is not connected in this prototype.')); 
   window.addEventListener('hashchange',()=>{const id=location.hash.replace(/^#\//,'');if(id!==page)navigate(id);});
-  window.__NATIS_UI__={getRoute:()=>page,getDataStatus:()=> 'not-connected',getCounts:()=>({applications:0,appointments:0,renewals:0,centres:0,citizens:0,payments:0,accidents:0,team:0,audit:0}),getResourceCount:()=>resources.length,getCampaignCount:()=>campaigns.length};
+  window.__NATIS_UI__={getRoute:()=>page,getDataStatus:()=>window.NaTISData?.isConnected()?'supabase':'locked',getCounts:()=>Object.fromEntries(['applications','appointments','renewals','centres','citizens','payments','accidents','team','audit'].map(k=>[k,state[k].length])),getResourceCount:()=>resources.length,getCampaignCount:()=>campaigns.length,setData:(data)=>{for(const [key,value] of Object.entries(data)){if(Array.isArray(state[key]))state[key]=Array.isArray(value)?value:[];}draw();}};
     const initial=location.hash.replace(/^#\//,'');page=nav.flatMap(g=>g.items).some(x=>x[0]===initial)?initial:'overview';draw();
 })();
