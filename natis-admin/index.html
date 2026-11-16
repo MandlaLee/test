@@ -9,8 +9,44 @@
   <link rel="icon" href="assets/brand/rtmc-logo.png" type="image/png" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="portal.css" />
+<style>
+ body.auth-locked #appShell {display:none!important}
+ .master-login-layer {box-sizing:border-box;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:28px 16px;background:linear-gradient(160deg,#287bb8 0%,#1f5c9c 52%,#f4f5f7 52.1%);font-family:"Open Sans",Arial,sans-serif;color:#2f3f50}
+ .master-login-layer[hidden] {display:none!important}
+ .master-login-box {width:min(440px,100%);background:white;padding:32px;border-radius:9px;box-shadow:0 18px 50px #10284330;display:flex;flex-direction:column;gap:14px}
+ .master-login-box>img{object-fit:contain;max-height:75px;align-self:flex-start}
+ .master-login-box>div:first-of-type{display:flex;flex-direction:column;gap:3px}
+ .master-login-box>div:first-of-type strong{font-size:18px}
+ .master-login-box>div:first-of-type span,.master-login-box small{font-size:12px;color:#627586}
+ .master-login-box h1{font-size:26px;margin:4px 0 0;color:#2574b6}
+ .master-login-box p{margin:0;line-height:1.55;font-size:13px}
+ .master-login-box form{display:flex;flex-direction:column;gap:10px}
+ .master-login-box label{font-weight:700;font-size:13px;margin-top:5px}
+ .master-login-box input{font:inherit;border:1px solid #bac5ce;border-radius:5px;padding:12px;font-size:15px;background:#fff;color:#243b52}
+ .master-login-box input:focus{outline:3px solid #89cfe6;outline-offset:1px}
+ .master-login-box button{background:#6ca32f;border:0;border-radius:5px;color:#fff;min-height:46px;font-weight:700;cursor:pointer;margin-top:8px}
+ .master-login-box button:disabled{opacity:.6;cursor:wait}
+ #masterLoginStatus{min-height:20px}
+ </style>
 </head>
-<body>
+<body class="auth-locked">
+<section id="masterLoginPanel" class="master-login-layer" aria-label="Master administrator sign in">
+ <div class="master-login-box">
+  <img src="assets/brand/rtmc-logo.png" alt="Road Traffic Management Corporation" width="76" />
+  <div><strong>NaTIS Administration</strong><span>Independent prototype · Master access</span></div>
+  <h1>Administrator sign in</h1>
+  <p>Only the designated master administrator can access this workspace. No public registration is available.</p>
+  <form id="masterLoginForm">
+   <label for="masterEmail">Administrator email</label>
+   <input type="email" id="masterEmail" autocomplete="username" required placeholder="admin@example.com" />
+   <label for="masterPassword">Password</label>
+   <input type="password" id="masterPassword" autocomplete="current-password" required minlength="8" />
+   <button id="masterSignIn" type="submit">Sign in securely</button>
+  </form>
+  <p id="masterLoginStatus" role="status" aria-live="polite">Checking authentication…</p>
+  <small>Prototype only · Not an official NaTIS or RTMC authentication service</small>
+ </div>
+</section>
 <div id="appShell" class="app-shell">
   <header class="portal-header">
     <div class="portal-utility" aria-label="NaTIS portal utility links">
@@ -52,5 +88,7 @@
 <div id="toastStack" class="toast-stack" aria-live="polite"></div>
 <div id="modalLayer"></div>
 <script src="app.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.min.js"></script>
+<script defer src="auth.js"></script>
 </body>
 </html>
