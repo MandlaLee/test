@@ -1,3 +1,18 @@
+## Phase 2 — Supabase connected (16 November 2026)
+
+The existing website now loads `auth.js` and `data.js` (both part of this folder). They connect to the previously named CHOVHA Supabase project, repurposed for this *independent* NaTIS admin prototype.
+
+- **Authentication:** email/password via Supabase Auth, plus a server-side check against `natis_private.master_admin`. This table has a singleton constraint, allowing a maximum of **one** approved master user. Merely creating an Auth account does not grant access. Never use the service-role key in browser code.
+- **Database:** empty, protected tables `natis_clients`, `natis_applications`, `natis_appointments`, `natis_test_results`, `natis_documents`, `natis_print_requests`, `natis_audit_events`. Read/write policies check the master allowlist.
+- **Storage:** private buckets `natis-client-photos` and `natis-protected-documents`; no public photo URLs. The UI supports uploads to the former.
+- **Admin actions:** create client profile, draft application, pending appointment, internal test result or watermarked demo print request. No official licence printing or government systems integration.
+- **No seeded/fabricated data** and no existing CHOVHA user/upload/profile data before migration.
+- **Before first use:** create the intended administrator through Supabase Authentication (via authorised Auth management), insert **that user's actual UUID** into `natis_private.master_admin`, disable public Auth signups in Supabase Dashboard, and validate the live authenticated workflow in a test deployment. None of these account steps have been completed yet; **zero master users currently exist**.
+- **Hosting:** the GitHub source branch is connected in code, but editing GitHub source is not itself a live deployment. Deploy the site via an approved host and configure appropriate HTTPS security headers and origin policy.
+- **Sensitive information:** do not upload real South African identity, driving, medical, or licensing data until the commissioning team explicitly approves hosting, access policy, retention and POPIA compliance.
+
+---
+
 # NaTIS Administration UI — public portal structure reference
 
 Independent UI demonstration for commissioning-team review. **Not an official NaTIS or RTMC service**, not endorsed for public use, and **not connected** to any official databases, identity providers or payment systems.
