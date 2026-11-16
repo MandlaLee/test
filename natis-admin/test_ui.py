@@ -26,7 +26,7 @@ def mount(page):
     svg_asset=root/'assets'/'brand'/'natis-navbar-reference.svg'
     html=html.replace('src="assets/brand/natis-navbar-reference.svg"','src="data:image/svg+xml;base64,'+base64.b64encode(svg_asset.read_bytes()).decode('ascii')+'"')
     page.set_content(html,wait_until='domcontentloaded')
-    page.add_style_tag(content=(root/'styles.css').read_text().split('\n',1)[1]);page.add_style_tag(content=(root/'portal.css').read_text().split('\n',1)[1].replace("@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap');",''))
+    page.add_style_tag(content=(root/'styles.css').read_text().split('\n',1)[1]);page.add_style_tag(content=(root/'portal.css').read_text().replace("@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap');",''))
     page.add_script_tag(content=(root/'app.js').read_text())
 
 def click_nav(page, slug):
