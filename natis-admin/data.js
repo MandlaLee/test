@@ -103,6 +103,10 @@
         x=>'<tr><td>'+escape(x.id.slice(0,8))+'</td><td>'+escape(x.print_type)+'</td><td>'+escape(x.status)+'</td><td>'+escape(displayDate(x.created_at))+'</td></tr>'));
     }
     if(page==='settings'){
+      cards.push(formPanel('Master administrator password', fieldsForm('natisChangePassword',
+        '<label style="display:flex;flex-direction:column;gap:5px;font-weight:600">New password (12+ characters)<input name="new_password" type="password" autocomplete="new-password" minlength="12" required class="input"></label>'+
+        '<label style="display:flex;flex-direction:column;gap:5px;font-weight:600">Confirm new password<input name="confirm_password" type="password" autocomplete="new-password" minlength="12" required class="input"></label>',
+        'Set or update password')));
       cards.push(formPanel('Supabase connection', '<p><strong>Connected project:</strong> CHOVHA (repurposed for NaTIS)</p><p><strong>Access:</strong> Verified master-only role using row-level security.</p><p><strong>Storage:</strong> Two private buckets. <strong>Official NaTIS:</strong> Not connected.</p><button class="btn" id="natisRefresh" type="button">Refresh database</button><p id="natisDataStatus" role="status" style="padding-top:12px"></p>'));
     }
     if(cards.length)target.insertAdjacentHTML('beforeend',cards.join(''));
@@ -119,6 +123,12 @@
     const f=e.target,button=f.querySelector('button[type="submit"]'),d=Object.fromEntries(new FormData(f));
     button.disabled=true;
     try{
+      if(id==='natisChangePassword'){
+        if(typeof d.new_password!=='string'||d.new_password.length<12 || d.new_password!==d.confirm_password)throw new Error('Passwords must match and contain at least 12 characters.');
+        const {error}=await client.auth.updateUser({password:d.new_password});
+        if(error)throw error;
+        f.reset(); alert('Password updated successfully.'); return;
+      }
       if(id==='natisCreateClient')await action('natis_clients',{reference:d.reference||null,display_name:d.display_name,contact_email:d.contact_email||null});
       if(id==='natisCreateApplication')await action('natis_applications',{client_id:d.client_id,service_type:d.service_type,status:'draft'});
       if(id==='natisCreateAppointment')await action('natis_appointments',{client_id:d.client_id,centre_name:d.centre_name,service_type:d.service_type,starts_at:new Date(d.starts_at).toISOString(),status:'pending'});
