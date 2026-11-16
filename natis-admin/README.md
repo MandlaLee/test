@@ -1,34 +1,54 @@
-# NaTIS-inspired Administration Workspace — Empty-data UI
+# NaTIS Administration UI — public portal structure reference
 
-An **independent, unconnected administration interface prototype** following the user-provided visual references for the public NaTIS website. This is **not an official RTMC/NaTIS administration service**; it does not connect to government databases or use live accounts.
+Independent UI demonstration for commissioning-team review. **Not an official NaTIS or RTMC service**, not endorsed for public use, and **not connected** to any official databases, identity providers or payment systems.
 
-## Phase 1.2 — all fictional operational data removed
+## Visual direction: reference homepage structure (16 November 2026)
 
-- There are no seeded applications, appointments, DLTC schedules, citizen profiles, payments, vehicle renewals, accident reports, staff members or audit events.
-- The dashboard does **not** invent service levels, activity trends, revenue, bookings, or licence figures.
-- Unknown metrics display **— / Not connected**, rather than a misleading zero.
-- All 15 responsive navigation sections still work; search/filter headers remain, and operational views show helpful empty states.
-- Create-record and fictitious-status-editing controls are removed, and CSV exports are disabled pending an authorised backend.
-- Previous locally saved demo datasets are cleared on load. Only interface preferences (notifications and compact layout) are stored in the browser.
-- The supplied RTMC/NaTIS logos, SVG icons, campaigns, blank forms and reference manuals are available for review. Campaign banners are **not** claimed to be live notices.
-- The role permission matrix is a proposed design, not actual access enforcement.
+The previous version was a generic enterprise dashboard. This version recreates the **page hierarchy** shown in the user-supplied NaTIS public homepage screenshot:
 
-## Run
+1. Blue gradient masthead and utility row with green social icons, login/register placeholder, and green support/contact banner.
+2. White logo/navigation strip containing the RTMC and NaTIS logos and a right-aligned hamburger menu.
+3. Centre-aligned blue WELCOME title region.
+4. White section with the exact green service introduction and blue explanatory sentence from the supplied reference.
+5. Administration workspace and white-panel operational screens **below** the public-portal introductory structure.
 
-Open `index.html` locally in a browser or run `python3 -m http.server 8080` in the `natis-admin` folder and open `http://localhost:8080`.
+At the reference viewport width of **838 CSS pixels**, the masthead is **304px tall**, navigation bar begins at **y=72px** and is **80px tall**, and the white introduction begins at **y=304px**. Other sizes respond fluidly. The header logo reference was cropped from the screenshot the user provided; it is not an official downloadable brand master. The public portal's source code was not used.
 
-For a single-file review, run `python3 build_standalone.py` to create `standalone.html`. Logos, icons and campaign images are embedded in this variant; links to PDFs still require the adjacent `assets/documents` folder.
+## Phase 1 — working
 
-## Test
+- 15 routes via the header hamburger, grouped into workspace, operations, administration.
+- Overview, applications, appointments, vehicle renewals, DLTC/slots, citizen profiles, payments, accidents, reports, forms, campaigns, brand resources, team, activity log and settings.
+- Search/filter controls, deep links, responsive navigation, keyboard shortcut (Cmd/Ctrl+K), and Esc-to-close.
+- Forms/manuals and campaign previews from the supplied reference assets.
+- **No fabricated records, revenue, percentages, capacity, staff identities or audit activity**. Metrics display em dash/unavailable and empty tables show no connection.
+- Legacy demonstration data is cleared from localStorage, only interface preferences may persist.
+- Login/register is explicitly a **non-functional UI placeholder** and reports that the login integration has not been connected. No credentials are collected.
 
-Install `playwright` and Chromium, then run `python3 test_ui.py`. The tests verify navigation, empty states, non-connected metrics, reference content, mobile menu, stale demo storage cleanup and client-side JavaScript health. This is front-end testing only: there is no official API, account session or live service to test.
+## Run and preview
 
-## Planned next phase
+```bash
+cd natis-admin
+python3 -m http.server 8080
+```
 
-Google Apps Script login and Google Sheets can be used for **low-risk test data** after appropriate access controls are designed. Do not store plaintext passwords, full citizen ID databases, sensitive medical information or government credentials in Google Sheets. Actual NaTIS integration requires authorised API access, server-side permissions, protected audit logs and a POPIA review.
+Open `http://localhost:8080/` in a browser. You can also open the generated `standalone.html` without installing any dependencies. It embeds styles, JS and images; accompanying PDF document links require the `assets/documents/` directory.
 
-## Brand and document rights
+To rebuild the single-file preview:
 
-The blue-gradient header, light-grey workspace, Open Sans typography and green accents follow the user's reference pages. User-provided RTMC/NaTIS logos, campaign images and manuals may be protected by copyright or trademark. The commissioning team must confirm redistribution and production usage rights. This GitHub repository is currently public; review permissions before wider distribution.
+```bash
+python3 build_standalone.py
+```
 
-**Repository:** `MandlaLee/test` · branch `natis-admin-ui-prototype` · folder `natis-admin/`.
+## Browser checks
+
+Requires Chromium and Playwright. Run `python3 test_ui.py`. Most recent local execution: **23/23 checks passed**, covering precise reference-viewport layout, heading and imagery, 15 routes, navigation accessibility, empty records, forms, settings and mobile overflow. Browser tests use inline content to avoid network access and cover UI interactions only; these are not integration, penetration, performance or production security tests.
+
+## Future phase
+
+1. Get commissioning-team approval for branding and confirm the authorised scope.
+2. Define staff roles, permissions, session protections and server-enforced authorisation.
+3. Integrate a reviewed login provider; Google Apps Script is not automatically suitable as a security boundary for government/personal data.
+4. Test with anonymised data in Google Sheets only if the project owner approves; never store plaintext passwords, ID numbers, medical documents or cardholder data there.
+5. Hand over secure API contract specifications for the authorised national systems team.
+
+The supplied RTMC/NaTIS artwork, public reference screenshot and PDF manuals have distinct ownership and distribution terms. The commissioning team should verify rights before public hosting. Never imply this prototype can issue documents, book real appointments, access citizen data or authenticate official staff.
