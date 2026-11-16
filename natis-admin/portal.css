@@ -1,0 +1,73 @@
+/* NaTIS public-portal STRUCTURE reference, supplied screenshot 2026-11-16.
+   Independent administrative UI; reference markup was not cloned. */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap');
+:root {--portal-blue:#2b73b7;--portal-blue-dark:#296aab;--portal-green:#78a62e;--portal-link:#415579;--portal-white:#fff;}
+*{box-sizing:border-box}
+html,body{margin:0;max-width:100%;min-height:100%;background:#f7f7f8;color:#3c4855;font-family:'Open Sans',Arial,sans-serif}
+body{overflow-x:hidden}
+.app-shell{display:block!important;min-height:100vh;position:relative;background:#fff}
+.portal-header{color:#fff;background:linear-gradient(180deg,#2f78b9 0%,#2e73b6 38%,#2d6dab 100%);min-height:304px;width:100%}
+.portal-utility{height:72px;max-width:1400px;padding:0 14px 0 47px;margin:0 auto;display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.portal-utility-left{display:flex;align-items:center;gap:13px;min-height:72px}
+.social-icons{display:inline-flex;align-items:center;gap:20px;color:var(--portal-green);white-space:nowrap}
+.social-icon{display:inline-grid;place-items:center;width:24px;height:26px;color:var(--portal-green);line-height:1;font-size:20px;font-weight:800;user-select:none}
+.social-icon.fb{font-family:Arial,sans-serif;background:var(--portal-green);color:#2e76b6;border-radius:3px;width:19px;height:21px;font-size:21px;overflow:hidden;padding-top:4px}
+.social-icon.instagram svg,.social-icon.twitter svg,.social-icon.youtube svg{width:23px;height:23px}
+.social-icon.youtube svg{width:24px;height:24px}
+.portal-login{border:0;background:transparent;color:#fff;font-size:12px;font-weight:800;white-space:nowrap;padding:8px 0;cursor:pointer}
+.portal-login:hover{text-decoration:underline}
+.portal-contact{align-self:flex-start;flex:0 1 402px;margin-top:16px;min-height:56px;padding:7px 18px;background:var(--portal-green);border-radius:16px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;text-align:right;font-size:16px;font-weight:700;line-height:1.38;color:#fff}
+.portal-contact a{color:#fff;text-decoration:none;font-size:14px;font-weight:700}
+.portal-contact a:hover{text-decoration:underline}
+.portal-navbox{height:80px;margin:0 20px;max-width:1360px;background:#fff;border-radius:5px;display:flex;align-items:center;justify-content:space-between;position:relative;padding:0 2px 0 8px}
+.portal-rtmc{height:74px;width:95px;object-fit:contain;object-position:center;display:block;transform:translateX(-7px)}
+.portal-natis{width:291px;height:57px;object-fit:contain;position:absolute;left:calc(50% + 20px);top:50%;transform:translate(-50%,-50%);display:block}
+.portal-hamburger{border:0;background:transparent;margin-left:auto;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:56px;cursor:pointer;position:relative;z-index:1;padding:6px}
+.portal-hamburger span{display:block;width:24px;height:2px;background:#858585}
+.portal-hamburger:hover span{background:#2872ac}
+.portal-hamburger:focus-visible,.portal-login:focus-visible{outline:3px solid #8fd0fb;outline-offset:2px}
+.portal-hero{min-height:152px;display:flex;align-items:center;justify-content:center;padding:12px 22px 6px}
+.portal-hero h1{font-family:'Open Sans',Arial,sans-serif;font-weight:700;font-size:33px;line-height:1.4;letter-spacing:.08px;text-align:center;color:#fff;margin:0}
+.portal-main{display:block;background:#fff}
+.portal-intro{padding:39px 22px 33px;text-align:center;min-height:158px;background:#fff;border-bottom:1px solid #f0f0f0}
+.portal-intro-lead{margin:0 auto;color:var(--portal-green);font-size:19px;font-weight:800;line-height:1.57;letter-spacing:-.58px;max-width:1150px}
+.portal-intro-sub{margin:18px 0 0;color:var(--portal-link);font-size:16px;font-weight:400;line-height:1.5}
+.admin-workspace{background:#f7f8fa;margin:0;min-width:0;border-top:1px solid #f0f2f4}
+.admin-toolbar{max-width:1340px;margin:0 auto;min-height:68px;padding:10px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.admin-toolbar-crumb{display:flex;align-items:center;gap:9px;font-size:12px;color:#8495a5}.admin-toolbar-crumb strong{color:#45617e}
+.admin-toolbar-actions{display:flex;align-items:center;gap:13px}
+.admin-toolbar .search-container{width:235px}
+.admin-context{max-width:1284px;margin:5px auto 0;display:flex;align-items:center;gap:12px;padding:12px 20px;background:#fff;border:1px solid #e0e7ed;border-left:4px solid #7da62a;border-radius:4px;color:#68798a;font-size:11px}
+.admin-context-tag{color:#2b6fa9;font-weight:800;letter-spacing:.3px}
+.page-wrap{max-width:1340px;padding:28px 28px 40px;min-height:300px;margin:0 auto;width:100%}
+.app-footer{width:100%;border-top:1px solid #e8edf2;background:#fff;color:#75869a;font-size:11px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 28px}
+/* Off-canvas navigation — opened by the same hamburger as the public portal. */
+.sidebar{position:fixed!important;z-index:120;right:0!important;left:auto!important;top:0;bottom:0;transform:translateX(110%)!important;transition:transform .23s ease!important;width:min(360px,88vw)!important;max-width:88vw;display:flex!important;flex-direction:column;box-shadow:-12px 0 40px #12283c29;background:#fff!important;color:#3d5368!important;overflow-x:hidden;overflow-y:auto;height:100dvh;visibility:hidden}
+.nav-open .sidebar{transform:translateX(0)!important;visibility:visible}
+.mobile-shade{z-index:115!important;position:fixed;inset:0;background:rgba(10,31,57,.45);opacity:0;pointer-events:none;transition:opacity .23s ease;display:block!important}
+.nav-open .mobile-shade{opacity:1;pointer-events:auto}
+.sidebar .brand{padding:18px 14px;display:flex;align-items:center;gap:10px;min-height:90px;border-bottom:1px solid #ebedf2;background:#fff}
+.sidebar .brand-logo{width:115px;height:auto;max-height:52px;object-fit:contain}
+.sidebar .brand-copy{flex:1}.sidebar .brand-copy strong{color:#2b6aab;font-size:13px}.sidebar .brand-copy span{color:#7a909d;font-size:9px}
+.sidebar-close{display:grid!important;place-items:center;flex:0 0 32px;color:#4f6474!important;font-size:27px!important}
+.sidebar .workspace-chip{margin:12px 18px;background:#f0f6e9;color:#4d7c23;border:1px solid #dce9d2;font-size:11px;border-radius:5px;padding:10px 12px;display:flex;gap:9px;align-items:center}
+.sidebar nav{padding:9px 14px 22px;flex:1}
+.nav-group{margin:0 0 16px}.nav-group-label{font-size:10px!important;letter-spacing:1px!important;font-weight:800!important;color:#8190a2!important;margin:13px 12px 9px!important}
+.nav-link{color:#52657a!important;border-radius:5px!important;width:100%;border:0;background:transparent;display:flex;align-items:center;text-align:left;gap:12px;padding:12px 13px;min-height:44px;font-size:13px!important;font-weight:600!important}
+.nav-link svg{color:#41759c;flex:0 0 auto}
+.nav-link:hover{background:#f3f7f9!important}
+.nav-link.active{background:#e9f2fb!important;border-left:4px solid #3484bb!important;color:#216d9e!important;font-weight:800!important}
+.sidebar-bottom{padding:8px 20px 24px;border-top:1px solid #eceff3;background:#f8fafb}
+.drawer-note{font-size:11px;color:#738598;line-height:1.5;margin:6px 0}
+/* Plain government-form presentation; no deep navy product dashboard treatment. */
+.page-header h1,.panel-title,.table-head h3,.kpi-value{font-family:'Open Sans',Arial,sans-serif!important}
+.page-header h1{color:#2e4d6e;font-size:26px}.page-eyebrow{color:var(--portal-green)!important}
+.panel,.kpi,.setting-card{border-radius:5px!important;box-shadow:none!important}
+.btn{border-radius:4px!important}.btn.primary{background:#76a52e!important;border-color:#76a52e!important}
+.proto-note{border-radius:4px;background:#f2f7eb;border-color:#dbe8ca;color:#5c7e35}.proto-note svg{color:#6b9938}
+.kpi-icon.green,.trend{color:#6a9e2d}
+.search-container{border-radius:4px!important}
+@media(min-width:1400px){.portal-navbox{margin:0 auto}.portal-utility{padding-right:0}}
+@media(max-width:900px){.portal-utility{padding-left:46px;padding-right:14px}.portal-contact{flex-basis:402px;min-width:280px}.portal-hero h1{font-size:32px}.intro-desktop-break{display:none}}
+@media(max-width:700px){.portal-utility{height:auto;min-height:94px;flex-wrap:wrap;padding:8px 14px 8px;gap:3px}.portal-utility-left{min-height:33px}.social-icons{gap:13px}.portal-contact{margin:0 0 8px;min-height:39px;width:100%;max-width:none;flex-basis:100%;font-size:12px;padding:4px 12px;align-items:center;text-align:center;border-radius:9px}.portal-contact a{font-size:11px}.portal-navbox{margin:0 10px;height:73px}.portal-rtmc{height:66px;width:82px}.portal-natis{width:min(51vw,275px);height:auto}.portal-hamburger{width:35px}.portal-hamburger span{width:23px}.portal-hero{min-height:125px;padding:17px 16px}.portal-hero h1{font-size:23px;letter-spacing:-.3px}.portal-intro{padding:30px 16px 28px;min-height:auto}.portal-intro-lead{font-size:16px}.portal-intro-sub{font-size:14px}.admin-toolbar{padding:12px 15px;flex-wrap:wrap}.admin-toolbar-actions{width:100%;justify-content:space-between}.admin-toolbar .search-container{max-width:100%;flex:1}.admin-context{margin:0 15px;flex-wrap:wrap}.page-wrap{padding:22px 15px}}
+@media(max-width:420px){.portal-hero h1{font-size:21px}.portal-navbox{padding-right:7px}.portal-natis{width:min(53vw,210px)}.portal-rtmc{width:73px}.social-icon{width:20px}.social-icons{gap:10px}.portal-login{font-size:11px}.portal-intro-lead{font-size:15px}.portal-intro-sub{font-size:13px}.header-date{display:none}.app-footer{flex-wrap:wrap;padding:16px}}
