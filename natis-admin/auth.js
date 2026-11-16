@@ -10,7 +10,7 @@
  let form = $('#masterLoginForm'), status = $('#masterLoginStatus'), submit = $('#masterSignIn');
  function message(s, error=false){ status.textContent=s; status.style.color=error?'#a62626':'#375577'; }
  function showLogin(){ lock(); $('#masterLoginPanel').hidden=false; $('#masterSignIn').disabled=false; }
- function showAdmin(){ authorized=true; $('#masterLoginPanel').hidden=true; unlock(); const b=$('#loginPreviewButton'); if(b)b.textContent='SIGN OUT'; }
+ function showAdmin(){ authorized=true; $('#masterLoginPanel').hidden=true; unlock(); const b=$('#loginPreviewButton'); if(b)b.textContent='SIGN OUT'; window.NaTISData?.start(client); }
  async function checkAccess(){
    if(checking)return;
    checking=true;
@@ -33,7 +33,7 @@
      showLogin(); message('Authentication library did not load. Check your internet connection.',true); return;
    }
    client=window.supabase.createClient(projectUrl,publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
-   window.NaTISAuth={client,isMaster:()=>authorized,signOut:async()=>{await client.auth.signOut();authorized=false;showLogin();message('Signed out.');}};
+   window.NaTISAuth={client,isMaster:()=>authorized,signOut:async()=>{await client.auth.signOut();authorized=false;window.NaTISData?.clear();showLogin();message('Signed out.');}};
    form.addEventListener('submit',async(e)=>{
      e.preventDefault(); submit.disabled=true; message('Verifying credentials…');
      try{
@@ -51,7 +51,7 @@
      if(authorized)await window.NaTISAuth.signOut();
      else{$('#masterEmail').focus();window.scrollTo({top:0,behavior:'smooth'});}
    },true);}
-   client.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT'&&authorized){authorized=false;showLogin();}});
+   client.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT'){authorized=false;window.NaTISData?.clear();showLogin();}});
    await checkAccess();
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});
