@@ -1,7 +1,7 @@
-/* NaTIS admin preview — unconnected and without fabricated records. */
+/* NaTIS admin UI preview — no seeded records, backend, or authentication. */
 (() => {
   'use strict';
-  // Only interface preferences are stored; records must come from an authorised backend.
+  const PREFERENCES_KEY = 'natis-admin-ui-preferences';
   const icons = {
     grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
     file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/>',
@@ -33,10 +33,24 @@
     {group:'OPERATIONS',items:[['citizens','Citizen profiles','users'],['payments','Payments','wallet'],['accidents','Accident reports','alert']]},
     {group:'ADMINISTRATION',items:[['reports','Reports & analytics','chart'],['resources','Forms & manuals','file'],['campaigns','Campaigns & notices','info'],['brandkit','Brand assets','shield'],['team','Team & access','shield'],['audit','Activity log','clock'],['settings','Settings','settings']]}
   ];
-  const state={applications:[],appointments:[],renewals:[],centres:[],citizens:[],payments:[],accidents:[],team:[],audit:[],settings:{alerts:true,compact:false}};
-  const PREFERENCES_KEY='natis-admin-ui-preferences';
-  try{localStorage.removeItem('road-services-admin-demo-v2');localStorage.removeItem('road-services-admin-demo-v1');const p=JSON.parse(localStorage.getItem(PREFERENCES_KEY)||'null');if(p&&typeof p==='object'){for(const k of ['alerts','compact'])if(typeof p[k]==='boolean')state.settings[k]=p[k];}}catch(_){};
-
+  // No fabricated citizens, bookings, payments, service levels or activity logs.
+  // Production records must come from an explicitly authorised integration.
+  const state={
+    applications:[], appointments:[], renewals:[], centres:[], citizens:[],
+    payments:[], accidents:[], team:[], audit:[],
+    settings:{alerts:true, compact:false}
+  };
+  try {
+    // Discard data left by earlier demo versions, even on an existing user's browser.
+    localStorage.removeItem('road-services-admin-demo-v2');
+    localStorage.removeItem('road-services-admin-demo-v1');
+    const preferences=JSON.parse(localStorage.getItem(PREFERENCES_KEY)||'null');
+    if (preferences && typeof preferences==='object') {
+      for(const key of ['alerts','compact']) {
+        if(typeof preferences[key]==='boolean') state.settings[key]=preferences[key];
+      }
+    }
+  } catch (_) { /* Storage may be unavailable; the UI still works. */ }
     let page='overview', query='', filter='all', period='7d', pageIndex=0, modal=null;
   const $=sel=>document.querySelector(sel);
   const h=(value)=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -44,22 +58,22 @@
   const prettyDate=s=>{const d=new Date(`${s}T12:00:00`);return Number.isNaN(d.getTime())?s:d.toLocaleDateString('en-ZA',{day:'2-digit',month:'short',year:'numeric'});};
   const status=s=>`<span class="status ${h(s.toLowerCase().replace(/[^a-z]/g,''))}">${h(s)}</span>`;
   const routeLabel=id=>nav.flatMap(group=>group.items).find(i=>i[0]===id)?.[1]||'Overview';
-  const save=()=>{try{localStorage.setItem(PREFERENCES_KEY,JSON.stringify(state.settings));}catch(_){}};
-  // Audit entries require authenticated server-side logging; none are fabricated.
+  const save=()=>{try{localStorage.setItem(PREFERENCES_KEY,JSON.stringify(state.settings));}catch(_){/* Interface preferences are optional. */}};
+  // No local synthetic activity history: audit events require verified operators and a server.
   function toast(message){const item=document.createElement('div');item.className='toast';item.textContent=message;$('#toastStack').append(item);setTimeout(()=>item.remove(),3400);}
-  function navigate(target){if(!nav.flatMap(g=>g.items).some(i=>i[0]===target))target='overview';page=target;query='';filter='all';pageIndex=0;$('#globalSearch').value='';location.hash=`/${target}`;draw();$('#appShell').classList.remove('nav-open');window.scrollTo(0,0);}
-  function navHtml(){return nav.map(g=>'<section class="nav-group"><p class="nav-group-label">'+g.group+'</p>'+g.items.map(([id,label,ic])=>'<button class="nav-link '+(page===id?'active':'')+'" data-nav="'+id+'" aria-current="'+(page===id?'page':'false')+'">'+icon(ic)+'<span>'+label+'</span></button>').join('')+'</section>').join('');}
+  function navigate(target){if(!nav.flatMap(g=>g.items).some(i=>i[0]===target))target='overview';page=target;query='';filter='all';pageIndex=0;$('#globalSearch').value='';location.hash=`/${target}`;draw();$('#appShell').classList.remove('nav-open');$('#menuToggle').setAttribute('aria-expanded','false');window.scrollTo(0,0);}
+  function navHtml(){return nav.map(g=>`<section class="nav-group"><p class="nav-group-label">${g.group}</p>${g.items.map(([id,label,ic])=>`<button class="nav-link ${page===id?'active':''}" data-nav="${id}" aria-current="${page===id?'page':'false'}">${icon(ic)}<span>${label}</span></button>`).join('')}</section>`).join('');}
   const head=(eyebrow,title,desc='',actions='')=>`<div class="page-header"><div><div class="page-eyebrow">${eyebrow}</div><h1>${title}</h1><p>${desc}</p></div>${actions?`<div class="header-actions">${actions}</div>`:''}</div>`;
-  const note=()=>'<div class="proto-note">'+icon('info',16)+'<span><strong>UI PREVIEW · NO DATA SOURCE</strong> — No records, active account, authentication or government service connection has been configured. Operational screens remain empty until approved integration.</span></div>';
+  const note=()=>`<div class="proto-note">${icon('info',16)}<span><strong>UI PREVIEW · NO DATA SOURCE</strong> — This interface has no imported records, active account, authentication, or connection to government services. All operational screens will remain empty until approved data integration.</span></div>`;
   const btn=(label,action,kind='')=>`<button class="btn ${kind}" data-action="${action}">${label}</button>`;
   const kpi=(label,value,delta,ic,kind='')=>`<article class="kpi"><div class="kpi-top"><span class="kpi-label">${label}</span><span class="kpi-icon ${kind}">${icon(ic,18)}</span></div><div class="kpi-value">${value}</div><div class="kpi-foot"><span class="trend">${delta}</span></div></article>`;
   const panel=(title,subtitle,inner,extra='')=>`<section class="panel"><div class="panel-header"><div><h2 class="panel-title">${title}</h2>${subtitle?`<p class="panel-subtitle">${subtitle}</p>`:''}</div>${extra}</div><div class="panel-content">${inner}</div></section>`;
   const stat=(label,value,foot)=>`<div class="small-stat"><span>${label}</span><strong>${value}</strong><small>${foot}</small></div>`;
-  const table=(cols,rows,key,empty='Connect an authorised data source to display records.')=>`<div class="table-outer"><table><thead><tr>${cols.map(x=>`<th>${x[0]}</th>`).join('')}<th>Action</th></tr></thead><tbody>${rows.length?rows.map(r=>`<tr>${cols.map(([label,field,fmt])=>`<td>${fmt?fmt(r[field],r):h(r[field])}</td>`).join('')}<td><button class="row-action" data-open="${key}:${h(r.id)}" aria-label="View ${h(r.id)}">View details ${icon('chevron',12)}</button></td></tr>`).join(''):`<tr><td colspan="${cols.length+1}"><div class="empty-state"><strong>${query||filter!=='all'?'No matching records':'No records available'}</strong><p>${empty}</p><button class="btn" data-nav="settings">View integration status</button></div></td></tr>`}</tbody></table></div>`;
+  const table=(cols,rows,key,empty='Connect an authorised data source to display records.')=>`<div class="table-outer"><table><thead><tr>${cols.map(x=>`<th>${x[0]}</th>`).join('')}${rows.length?'<th>Action</th>':''}</tr></thead><tbody>${rows.length?rows.map(r=>`<tr>${cols.map(([label,field,fmt])=>`<td>${fmt?fmt(r[field],r):h(r[field])}</td>`).join('')}<td><button class="row-action" data-open="${key}:${h(r.id)}">View details ${icon('chevron',12)}</button></td></tr>`).join(''):`<tr><td colspan="${cols.length}"><div class="empty-state clean-empty">${icon('info',23)}<strong>${query||filter!=='all'?'No matching records':'No records available'}</strong><p>${empty}</p><button class="btn" data-nav="settings">View integration status ${icon('chevron',14)}</button></div></td></tr>`}</tbody></table></div>`;
   const field=(label,name,value='',type='text',opts='')=>`<div class="form-field"><label for="f_${name}">${label}</label>${type==='select'?`<select id="f_${name}" name="${name}">${opts.split('|').map(x=>`<option ${x===value?'selected':''}>${h(x)}</option>`).join('')}</select>`:`<input id="f_${name}" name="${name}" type="${type}" value="${h(value)}" required />`}</div>`;
   const filterTool=(placeholder,statuses)=>`<div class="table-tools"><label class="search-field"><span>${icon('search',14)}</span><input class="input" id="localQuery" value="${h(query)}" aria-label="Search records" placeholder="${placeholder}" autocomplete="off"/></label><select class="select" id="statusFilter" aria-label="Filter by status"><option value="all">All statuses</option>${statuses.map(x=>`<option value="${h(x)}" ${filter===x?'selected':''}>${h(x)}</option>`).join('')}</select></div>`;
   const match=r=>Object.values(r).some(v=>String(v).toLowerCase().includes(query.toLowerCase())) && (filter==='all'||r.status===filter);
-  const exportButton=key=>'<button class="btn" disabled title="Export is unavailable without an approved data connection">'+icon('download',15)+' Export CSV</button>';
+  const exportButton=key=>`<button class="btn" disabled title="Export will be available after an approved data connection" aria-label="Export ${h(key)}: data source not connected">${icon('download',15)} Export CSV</button>`;
   // Only publicly oriented documents supplied for this demo are listed here. No scanned applicant data.
   const resources = [
     {id:'LL1',title:'Learner\u2019s licence application',type:'Application form',category:'forms',description:'LL1 application and duplicate request; applicant particulars, vehicle class and declarations.',file:'learner-licence-LL1.pdf',icon:'learner'},
@@ -80,83 +94,87 @@
   ];
   function resourceGrid(){
     const items=resources.filter(r=>((filter==='all'||r.category===filter)&&(r.id+' '+r.title+' '+r.type+' '+r.description).toLowerCase().includes(query.toLowerCase())));
-    return head('KNOWLEDGE & DOCUMENTS','Forms & manuals','Supplied reference material for use while reviewing applications. All downloads are reference copies; do not complete with real personal data in this demo.')+note()+
+    return head('KNOWLEDGE & DOCUMENTS','Forms & manuals','Supplied reference material for use while reviewing applications. All downloads are supplied references; do not enter personal information into this preview.')+note()+
       `<div class="table-tools resource-tools"><label class="search-field">${icon('search',15)}<input id="localQuery" class="input" aria-label="Search forms and manuals" value="${h(query)}" placeholder="Find a form, code, or manual..."></label><select class="select" id="statusFilter" aria-label="Filter document type"><option value="all">All documents</option>${[['forms','Forms'],['manuals','Manuals'],['governance','Governance']].map(([v,t])=>`<option value="${v}" ${filter===v?'selected':''}>${t}</option>`).join('')}</select></div>`+
       `<div class="resource-grid">${items.map(r=>`<article class="resource-card"><div class="resource-illustration"><img src="assets/icons/${r.icon}.svg" alt="" loading="lazy" /></div><div class="resource-copy"><div class="resource-type">${h(r.id)} · ${h(r.type)}</div><h2>${h(r.title)}</h2><p>${h(r.description)}</p><a class="btn resource-open" href="assets/documents/${encodeURIComponent(r.file)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${h(r.title)} document">${icon('file',15)} View document</a></div></article>`).join('')||'<div class="empty-resource">No reference documents match this filter.</div>'}</div>`+
-      `<div class="reference-notice">${icon('info',20)}<div><strong>Document-control note</strong><p>These supplied editions are for UI evaluation. Check publication, currency, redistribution rights and approval with the commissioning team before production or public deployment. The app does not create, sign, validate or lodge official applications.</p></div></div>`;
+      `<div class="reference-notice">${icon('info',20)}<div><strong>Document-control note</strong><p>These supplied editions are for internal reference. Check publication, currency, redistribution rights and approval with the commissioning team before production or public deployment. The app does not create, sign, validate or lodge official applications.</p></div></div>`;
   }
   function campaignPage(){
-  return head('CONTENT LIBRARY','Campaigns & notices','Uploaded RTMC / NaTIS campaign artwork for internal reference. These are not live or scheduled website notices.')+note()+
-    `<div class="campaign-grid">${campaigns.map(c=>`<article class="campaign-card"><div class="campaign-cover"><img src="assets/campaigns/${c.image}" alt="${h(c.title)} artwork" loading="lazy" /></div><div class="campaign-body"><div class="resource-type">${h(c.tag)} · Uploaded reference</div><h3>${h(c.title)}</h3><p>${h(c.caption)}</p><div class="campaign-actions"><a class="btn" href="assets/campaigns/${c.image}" target="_blank" rel="noopener noreferrer">View artwork</a></div></div></article>`).join('')}</div>`+
-    `<div class="reference-notice">${icon('info',20)}<div><strong>Publishing not configured</strong><p>Artwork is for internal review only. Nothing displayed here represents a currently published notice. Approval, expiry dates, publishing permissions and official service content must be verified with the commissioning team.</p></div></div>`;
-}
+    return head('CONTENT LIBRARY','Campaigns & notices','Uploaded RTMC / NaTIS campaign artwork for internal reference. These are not live or scheduled website notices.')+note()+
+      `<div class="campaign-grid">${campaigns.map(c=>`<article class="campaign-card"><div class="campaign-cover"><img src="assets/campaigns/${c.image}" alt="${h(c.title)} artwork" loading="lazy" /></div><div class="campaign-body"><div class="resource-type">${h(c.tag)} · Uploaded reference</div><h3>${h(c.title)}</h3><p>${h(c.caption)}</p><div class="campaign-actions"><a class="btn" href="assets/campaigns/${c.image}" target="_blank" rel="noopener noreferrer">View artwork</a></div></div></article>`).join('')}</div>`+
+      `<div class="reference-notice">${icon('info',20)}<div><strong>Publishing not configured</strong><p>Artwork is for internal review only. Nothing displayed here represents a currently published notice. Approval, expiry dates, publishing permissions and official service content must be verified with the commissioning team.</p></div></div>`;
+  }
     function brandKit(){
     const colors=[['NaTIS purple','#7B2E87'],['RTMC blue','#2379BD'],['Road-safety green','#66A73B'],['Interface navy','#172D49'],['White','#FFFFFF']];
     const items=[['learner','Learner licence'],['driving-licence','Driving test'],['licence-card','Licence card'],['vehicle-disc','Vehicle licence disc'],['prdp','PrDP'],['appointment','Slot request'],['crash','Accident report'],['faq','Help & FAQ']];
-    return head('DESIGN SYSTEM','Brand assets','Original logos and portal graphics supplied for visual review, with a practical dashboard colour reference.')+note()+
-      `<div class="brand-assets-grid"><section class="brand-tile"><h2>NaTIS logo</h2><div class="brand-display brand-light"><img src="assets/brand/natis-wordmark.png" alt="NaTIS National Traffic Information System logo" /></div><p>Supplied NaTIS wordmark. Maintain original proportions; no retyping.</p></section><section class="brand-tile"><h2>RTMC logo</h2><div class="brand-display brand-dark"><img src="assets/brand/rtmc-logo.png" alt="Road Traffic Management Corporation logo" /></div><p>Supplied RTMC graphic. Use only as approved by the commissioning team.</p></section></div>`+
+    return head('DESIGN SYSTEM','Brand assets','Uploaded logos and portal graphics supplied for visual review, with a practical dashboard colour reference.')+note()+
+      `<div class="brand-assets-grid"><section class="brand-tile"><h2>NaTIS logo</h2><div class="brand-display brand-light"><img src="assets/brand/natis-navbar-reference.svg" alt="NaTIS National Traffic Information System logo" /></div><p>NaTIS logo visual reference captured from the supplied public-site screenshot; brand use subject to approval.</p></section><section class="brand-tile"><h2>RTMC logo</h2><div class="brand-display brand-dark"><img src="assets/brand/rtmc-logo.png" alt="Road Traffic Management Corporation logo" /></div><p>Supplied RTMC graphic. Use only as approved by the commissioning team.</p></section></div>`+
       `<section class="panel"><div class="panel-header"><div><h2 class="panel-title">Interface palette</h2><p class="panel-subtitle">Design approximation based on the supplied brand artwork; not an official colour specification.</p></div></div><div class="swatch-grid">${colors.map(([n,c])=>`<div class="swatch"><span style="background:${c};${c==='#FFFFFF'?'border:1px solid #cbd5e1;':''}"></span><strong>${n}</strong><small>${c}</small></div>`).join('')}</div></section>`+
       `<section class="panel" style="margin-top:18px"><div class="panel-header"><div><h2 class="panel-title">Portal service icons</h2><p class="panel-subtitle">Supplied SVG files mapped to admin services.</p></div></div><div class="icon-gallery">${items.map(([f,label])=>`<div class="brand-icon-card"><img src="assets/icons/${f}.svg" alt="" loading="lazy" /><strong>${h(label)}</strong></div>`).join('')}</div></section>`+
-      `<div class="reference-notice">${icon('info',20)}<div><strong>Fonts and asset rights</strong><p>This build uses accessible system and web fallback fonts, not a claimed official NaTIS typeface. Brand use, asset distribution and exact font choice require written confirmation before a production release.</p></div></div>`;
+      `<div class="reference-notice">${icon('info',20)}<div><strong>Fonts and asset rights</strong><p>This build uses Open Sans with system fallbacks based on the supplied public-page references. Brand use, asset distribution and exact font choice require written confirmation before a production release.</p></div></div>`;
   }
   function awaitingConnection(label='No records to display',detail='Connect an authorised data source to load this information.'){
-  return `<div class="blank-dashboard">${icon('info',28)}<strong>${h(label)}</strong><p>${h(detail)}</p><button class="btn" data-nav="settings">Integration status ${icon('chevron',14)}</button></div>`;
-}
+    return `<div class="blank-dashboard">${icon('info',28)}<strong>${h(label)}</strong><p>${h(detail)}</p><button class="btn" data-nav="settings">Integration status ${icon('chevron',14)}</button></div>`;
+  }
   function overview(){
-  return head('OPERATIONS OVERVIEW','Administration overview','Your operational workspace is ready. No data source has been configured yet.')+note()+
-  `<div class="kpi-grid">${kpi('Total applications','—','Not connected','file','blue')}${kpi('Appointments','—','Not connected','calendar','green')}${kpi('Vehicle renewals','—','Not connected','car','purple')}${kpi('Pending reviews','—','Not connected','clock','amber')}</div>`+
-  `<div class="panel-grid">${panel('Service activity','Appears when a verified data feed is connected',awaitingConnection('Activity data unavailable','No activity chart or totals are shown without a connected source.'))}${panel('Service performance','No estimated rates or generated results',awaitingConnection('Performance data unavailable','Service measures will be calculated from approved transactions.'))}</div>`+
-  `<div class="two-column">${panel('Latest applications','No imported application records',awaitingConnection('Application queue empty','Applications will appear after integration.'))}${panel('Activity feed','Requires a verified audit source',awaitingConnection('No activity recorded','Live staff actions will require authenticated, server-side audit logging.'))}</div>`;
-}
+    return head('OPERATIONS OVERVIEW','Administration overview','Your operational workspace is ready. No data source has been configured yet.')+note()+
+      `<div class="kpi-grid">${kpi('Total applications','—','Not connected','file','blue')}${kpi('Appointments','—','Not connected','calendar','green')}${kpi('Vehicle renewals','—','Not connected','car','purple')}${kpi('Pending reviews','—','Not connected','clock','amber')}</div>`+
+      `<div class="panel-grid">${panel('Service activity','Appears when a verified data feed is connected',awaitingConnection('Activity data unavailable','No activity chart or totals are shown without a connected source.'))}${panel('Service performance','No estimated rates or generated results',awaitingConnection('Performance data unavailable','Service measures will be calculated from approved transactions.'))}</div>`+
+      `<div class="two-column">${panel('Latest applications','No imported application records',awaitingConnection('Application queue empty','Applications will appear after integration.'))}${panel('Activity feed','Requires a verified audit source',awaitingConnection('No activity recorded','Live staff actions will require authenticated, server-side audit logging.'))}</div>`;
+  }
     function recordsPage(key,eyebrow,title,description,cols,statuses){
-  const rows=state[key].filter(match);
-  return head(eyebrow,title,description,exportButton(key))+note()+
-    `<section class="panel table-panel"><div class="table-head"><div><h2>${title} register</h2><p>Waiting for an authorised data source</p></div><span class="badge-demo">NOT CONNECTED</span></div>${filterTool('Search records when connected...',statuses)}${table(cols,rows,key)}<div class="table-footer"><span>Data source: not connected</span><span>0 imported records</span></div></section>`;
-}
-    function appointments(){
-  return `<div class="small-cards">${stat('Confirmed','—','Data unavailable')}${stat('Awaiting confirmation','—','Data unavailable')}${stat('Cancelled','—','Data unavailable')}</div>`+recordsPage('appointments','BOOKING OPERATIONS','Appointments','Browse test bookings and licence-card renewal appointments when connected.',[['Booking ID','id'],['Applicant','name'],['Service','service'],['Centre','centre'],['Date','date',prettyDate],['Time','time'],['Status','status',status]],['Confirmed','Pending','Cancelled']);
-}
-    function centres(){
-  return head('SERVICE NETWORK','DLTC & available slots','Centre details and appointment capacity will appear after your integration is configured.')+note()+
+    const rows=state[key].filter(match);
+    return head(eyebrow,title,description,exportButton(key))+note()+
+      `<section class="panel table-panel"><div class="table-head"><div><h2>${title} register</h2><p>Waiting for an authorised data source</p></div><span class="badge-demo">NOT CONNECTED</span></div>${filterTool('Search records when connected...',statuses)}${table(cols,rows,key)}<div class="table-footer"><span>Data source: not connected</span><span>0 imported records</span></div></section>`;
+  }
+    function appointments(){return `<div class="small-cards">${stat('Confirmed','—','Data unavailable')}${stat('Awaiting confirmation','—','Data unavailable')}${stat('Cancelled','—','Data unavailable')}</div>`+recordsPage('appointments','BOOKING OPERATIONS','Appointments','Browse test bookings and licence-card renewal appointments when connected.',[['Booking ID','id'],['Applicant','name'],['Service','service'],['Centre','centre'],['Date','date',prettyDate],['Time','time'],['Status','status',status]],['Confirmed','Pending','Cancelled']);}
+    function centres(){return head('SERVICE NETWORK','DLTC & available slots','Centre details and appointment capacity will appear after your integration is configured.')+note()+
     `<div class="small-cards">${stat('Listed centres','—','Data unavailable')}${stat('Total daily slots','—','Data unavailable')}${stat('Available slots','—','Data unavailable')}</div>`+
-    `<section class="panel">${awaitingConnection('No centre data imported','Testing-centre lists, schedules and capacity must come from a verified source. This preview does not claim any centre is open or available.')}</section>`;
-}
-    function reports(){
-  return head('ANALYTICS','Reports & analytics','Reports will populate after an authorised data connection; figures are not estimated.')+note()+
+    `<section class="panel">${awaitingConnection('No centre data imported','Testing-centre lists, schedules and capacity must come from a verified source. This preview does not claim any centre is open or available.')}</section>`;}
+    function reports(){return head('ANALYTICS','Reports & analytics','Reports will populate after an authorised data connection; figures are not estimated.')+note()+
     `<div class="kpi-grid">${kpi('Cases on record','—','Not connected','file')}${kpi('Completed applications','—','Not connected','check')}${kpi('Paid transactions','—','Not connected','wallet')}${kpi('Active centres','—','Not connected','building')}</div>`+
-    `<div class="two-column">${panel('Volume by service','Requires connected operational records',awaitingConnection('No volume data','Charts will be populated with verified application and booking data.'))}${panel('Downloadable reports','Export requires data access',awaitingConnection('No exports available','CSV downloads will be enabled after the source has been connected and permissions enforced.'))}</div>`;
-}
-    function team(){
-  return head('ACCESS MANAGEMENT','Team & permissions','Staff accounts are not connected. The role matrix below is a proposal, not enforced access control.')+note()+
-    `<div class="two-column">${panel('Staff directory','Awaiting identity-provider connection',awaitingConnection('No staff accounts loaded','Staff, role assignments and invitations require authenticated management.'))}${panel('Proposed permission matrix','For team review only · not yet enforced',`<div class="table-outer"><table class="permission-table"><thead><tr><th>Permission</th><th>Admin</th><th>Reviewer</th><th>Auditor</th></tr></thead><tbody>${[['View records',1,1,1],['Update applications',1,1,0],['Edit centre capacity',1,0,0],['Manage accounts',1,0,0],['Export audit logs',1,0,1]].map(r=>`<tr><td>${r[0]}</td>${r.slice(1).map(x=>`<td class="${x?'permission-ok':'permission-no'}">${x?'✓':'—'}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`)}</div>`;
-}
+    `<div class="two-column">${panel('Volume by service','Requires connected operational records',awaitingConnection('No volume data','Charts will be populated with verified application and booking data.'))}${panel('Downloadable reports','Export requires data access',awaitingConnection('No exports available','CSV downloads will be enabled after the source has been connected and permissions enforced.'))}</div>`;}
+    function team(){return head('ACCESS MANAGEMENT','Team & permissions','Staff accounts are not connected. The role matrix below is a proposal, not enforced access control.')+note()+
+    `<div class="two-column">${panel('Staff directory','Awaiting identity-provider connection',awaitingConnection('No staff accounts loaded','Staff, role assignments and invitations require authenticated management.'))}${panel('Proposed permission matrix','For team review only · not yet enforced',`<div class="table-outer"><table class="permission-table"><thead><tr><th>Permission</th><th>Admin</th><th>Reviewer</th><th>Auditor</th></tr></thead><tbody>${[['View records',1,1,1],['Update applications',1,1,0],['Edit centre capacity',1,0,0],['Manage accounts',1,0,0],['Export audit logs',1,0,1]].map(r=>`<tr><td>${r[0]}</td>${r.slice(1).map(x=>`<td class="${x?'permission-ok':'permission-no'}">${x?'✓':'—'}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`)}</div>`;}
     function audit(){return recordsPage('audit','GOVERNANCE','Activity log','Audit entries require a connected authentication and logging system.',[['Event','action'],['Record','entity'],['Actor','actor'],['Timestamp','date']],[]);}
-    function settings(){
-  return head('WORKSPACE CONFIGURATION','Settings','Local display preferences and integration-readiness information.')+note()+
-  `<div class="settings-grid"><section class="setting-card"><h3>Interface preferences</h3><p>Only display preferences are saved in your browser.</p>${[['alerts','Show interface notifications'],['compact','Compact data tables']].map(([key,label])=>`<label class="toggle-row"><span>${label}</span><input class="switch" type="checkbox" data-setting="${key}" ${state.settings[key]?'checked':''}/></label>`).join('')}</section><section class="setting-card"><h3>Data connections</h3><p>Nothing is connected. This screen does not collect passwords or government credentials.</p><div class="info-box"><strong>Google Apps Script</strong><p>Not connected · planned test login</p><strong>Google Sheets</strong><p>Not connected · test data only, once approved</p><strong>Official NaTIS systems</strong><p>Not connected · requires an authorised secure integration</p><strong>Authentication & permissions</strong><p>Not implemented · staff access must be enforced server-side</p></div></section><section class="setting-card"><h3>Data status</h3><p>This build contains no fictional citizen, appointment, licence, payment or employee records. Previously saved demo datasets are ignored and cleared when this version loads.</p><div class="info-box"><strong>No live records</strong><p>The em dash (—) on metric cards means unavailable, not zero.</p></div></section><section class="setting-card"><h3>About this preview</h3><p>Independent UI prototype using user-supplied NaTIS/RTMC branding references. Not a public-facing government service.</p><div class="info-box"><strong>Version 1.2 · Empty-state build</strong><p>HTML · CSS · JavaScript · no API keys · no authentication · no fabricated datasets</p></div></section></div>`;
-}
+    function settings(){return head('WORKSPACE CONFIGURATION','Settings','Local display preferences and integration-readiness information.')+note()+
+    `<div class="settings-grid"><section class="setting-card"><h3>Interface preferences</h3><p>Only display preferences are saved in your browser.</p>${[['alerts','Show interface notifications'],['compact','Compact data tables']].map(([key,label])=>`<label class="toggle-row"><span>${label}</span><input class="switch" type="checkbox" data-setting="${key}" ${state.settings[key]?'checked':''}/></label>`).join('')}</section><section class="setting-card"><h3>Data connections</h3><p>Nothing is connected. This screen does not collect passwords or government credentials.</p><div class="info-box"><strong>Google Apps Script</strong><p>Not connected · planned test login</p><strong>Google Sheets</strong><p>Not connected · test data only, once approved</p><strong>Official NaTIS systems</strong><p>Not connected · requires an authorised secure integration</p><strong>Authentication & permissions</strong><p>Not implemented · staff access must be enforced server-side</p></div></section><section class="setting-card"><h3>Data status</h3><p>This build contains no fictional citizen, appointment, licence, payment or employee records. Previously saved demo datasets are ignored and cleared when this version loads.</p><div class="info-box"><strong>No live records</strong><p>The em dash (—) on metric cards means unavailable, not zero.</p></div></section><section class="setting-card"><h3>About this preview</h3><p>Independent UI prototype using user-supplied NaTIS/RTMC branding references. Not a public-facing government service.</p><div class="info-box"><strong>Version 1.2 · Empty-state build</strong><p>HTML · CSS · JavaScript · no API keys · no authentication · no fabricated datasets</p></div></section></div>`;}
     const pages={overview,resources:resourceGrid,campaigns:campaignPage,brandkit:brandKit,
-applications:()=>recordsPage('applications','CASE MANAGEMENT','Applications','Application queues will appear here once connected.',[['Reference','id'],['Applicant','name'],['Service','service'],['Centre','centre'],['Submitted','date',prettyDate],['Status','status',status]],['Pending','In review','Processing','Completed','Rejected']),
-appointments,renewals:()=>recordsPage('renewals','VEHICLE LICENSING','Vehicle renewals','Vehicle licence renewals and fulfilment statuses require a connected source.',[['Reference','id'],['Vehicle','name'],['Registration','registration'],['Province','province'],['Amount','amount'],['Status','status',status]],['Pending','Paid','Processing','Dispatched','Completed']),
-centres,citizens:()=>recordsPage('citizens','CITIZEN SERVICES','Citizen profiles','Personal information is not bundled with this interface.',[['Profile','name'],['Identity reference','identity'],['Province','province'],['Registered','joined',prettyDate],['Status','status',status]],['Active','Suspended']),
-payments:()=>recordsPage('payments','TRANSACTION MONITORING','Payments','No payment transactions or revenue figures are available without a verified provider.',[['Transaction','id'],['Reference','reference'],['Service','service'],['Amount','amount'],['Date','date',prettyDate],['Status','status',status]],['Paid','Pending','Failed']),
-accidents:()=>recordsPage('accidents','INCIDENT MANAGEMENT','Accident reports','Only securely provided reports can be reviewed here.',[['Report','id'],['Submitter','name'],['Location','location'],['Type','type'],['Submitted','date',prettyDate],['Status','status',status]],['Pending review','In review','Resolved']),
-reports,team,audit,settings};
+    applications:()=>recordsPage('applications','CASE MANAGEMENT','Applications','Application queues will appear here once connected.',[['Reference','id'],['Applicant','name'],['Service','service'],['Centre','centre'],['Submitted','date',prettyDate],['Status','status',status]],['Pending','In review','Processing','Completed','Rejected']),
+    appointments,renewals:()=>recordsPage('renewals','VEHICLE LICENSING','Vehicle renewals','Vehicle licence renewals and fulfilment statuses require a connected source.',[['Reference','id'],['Vehicle','name'],['Registration','registration'],['Province','province'],['Amount','amount'],['Status','status',status]],['Pending','Paid','Processing','Dispatched','Completed']),
+    centres,citizens:()=>recordsPage('citizens','CITIZEN SERVICES','Citizen profiles','Personal information is not bundled with this interface.',[['Profile','name'],['Identity reference','identity'],['Province','province'],['Registered','joined',prettyDate],['Status','status',status]],['Active','Suspended']),
+    payments:()=>recordsPage('payments','TRANSACTION MONITORING','Payments','No payment transactions or revenue figures are available without a verified provider.',[['Transaction','id'],['Reference','reference'],['Service','service'],['Amount','amount'],['Date','date',prettyDate],['Status','status',status]],['Paid','Pending','Failed']),
+    accidents:()=>recordsPage('accidents','INCIDENT MANAGEMENT','Accident reports','Only securely provided reports can be reviewed here.',[['Report','id'],['Submitter','name'],['Location','location'],['Type','type'],['Submitted','date',prettyDate],['Status','status',status]],['Pending review','In review','Resolved']),
+    reports,team,audit,settings};
     function draw(){
     $('#sideNav').innerHTML=navHtml();$('#breadcrumbCurrent').textContent=routeLabel(page);
+    const home=page==='overview';
+    $('#portalHeroTitle').textContent=home?'WELCOME TO THE NaTIS ONLINE SERVICES':'NaTIS ONLINE SERVICES';
+    $('#portalIntro').innerHTML=home?'<p class="portal-intro-lead">Use the provided links to either book an appointment, register as a road traffic user<br class="intro-desktop-break" /> or; report a minor crash.</p><p class="portal-intro-sub">To access some of these services log in OR register a profile</p>':`<p class="portal-intro-lead">${h(routeLabel(page))}</p><p class="portal-intro-sub">Administration workspace · No connected records</p>`;
+    $('#menuToggle').setAttribute('aria-expanded',$('#appShell').classList.contains('nav-open')?'true':'false');
     $('#pageContent').innerHTML=(pages[page]||overview)();
     if(state.settings.compact)document.body.classList.add('compact');else document.body.classList.remove('compact');
     $('#headerDate').textContent=new Date().toLocaleDateString('en-ZA',{day:'2-digit',month:'short',year:'numeric'});
   }
-  document.addEventListener('click',e=>{const n=e.target.closest('[data-nav]');if(n)navigate(n.dataset.nav);});
-document.addEventListener('input',e=>{if(e.target.id==='localQuery'||e.target.id==='globalSearch'){query=e.target.value;pageIndex=0;const focused=e.target.id;const caret=e.target.selectionStart;draw();const n=document.getElementById(focused);if(n){n.focus();try{n.setSelectionRange(caret,caret)}catch(_){}}if(focused==='globalSearch')document.getElementById('globalSearch').value=query;}});
-document.addEventListener('change',e=>{if(e.target.id==='statusFilter'){filter=e.target.value;draw();}if(e.target.dataset.setting){state.settings[e.target.dataset.setting]=e.target.checked;save();draw();if(state.settings.alerts)toast('Preference saved on this device.')}});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('appShell').classList.remove('nav-open');if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();document.getElementById('globalSearch').focus();}});
-document.getElementById('menuToggle').addEventListener('click',()=>document.getElementById('appShell').classList.add('nav-open'));
-document.getElementById('closeSidebar').addEventListener('click',()=>document.getElementById('appShell').classList.remove('nav-open'));
-document.getElementById('shade').addEventListener('click',()=>document.getElementById('appShell').classList.remove('nav-open'));
-document.getElementById('notificationsButton').addEventListener('click',()=>toast('Notifications are unavailable until an authenticated service is connected.'));
-window.addEventListener('hashchange',()=>{const id=location.hash.replace(/^#\//,'');if(id!==page)navigate(id);});
-window.__NATIS_UI__={getRoute:()=>page,getDataStatus:()=> 'not-connected',getCounts:()=>({applications:0,appointments:0,renewals:0,centres:0,citizens:0,payments:0,accidents:0,team:0,audit:0}),getResourceCount:()=>resources.length,getCampaignCount:()=>campaigns.length};
+  document.addEventListener('click',e=>{
+    const n=e.target.closest('[data-nav]');if(n){navigate(n.dataset.nav);return;}
+  });
+  document.addEventListener('input',e=>{if(e.target.id==='localQuery'||e.target.id==='globalSearch'){
+    query=e.target.value;pageIndex=0;const focused=e.target.id;const caret=e.target.selectionStart;
+    draw();const n=$('#'+focused);if(n){n.focus();try{n.setSelectionRange(caret,caret);}catch(_){}}
+    if(focused==='globalSearch')$('#globalSearch').value=query;
+  }});
+  document.addEventListener('change',e=>{
+    if(e.target.id==='statusFilter'){filter=e.target.value;draw();}
+    if(e.target.dataset.setting){state.settings[e.target.dataset.setting]=e.target.checked;save();draw();if(state.settings.alerts)toast('Preference saved on this device.');}
+  });
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('#appShell').classList.remove('nav-open');$('#menuToggle').setAttribute('aria-expanded','false');}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('#globalSearch').focus();}});
+  $('#menuToggle').addEventListener('click',()=>{$('#appShell').classList.add('nav-open');$('#menuToggle').setAttribute('aria-expanded','true');});
+  $('#closeSidebar').addEventListener('click',()=>{$('#appShell').classList.remove('nav-open');$('#menuToggle').setAttribute('aria-expanded','false');});
+  $('#shade').addEventListener('click',()=>{$('#appShell').classList.remove('nav-open');$('#menuToggle').setAttribute('aria-expanded','false');});
+  $('#notificationsButton').addEventListener('click',()=>toast('Notifications are unavailable until an authenticated service is connected.'));
+  $('#loginPreviewButton').addEventListener('click',()=>toast('Login is not connected in this prototype.')); 
+  window.addEventListener('hashchange',()=>{const id=location.hash.replace(/^#\//,'');if(id!==page)navigate(id);});
+  window.__NATIS_UI__={getRoute:()=>page,getDataStatus:()=> 'not-connected',getCounts:()=>({applications:0,appointments:0,renewals:0,centres:0,citizens:0,payments:0,accidents:0,team:0,audit:0}),getResourceCount:()=>resources.length,getCampaignCount:()=>campaigns.length};
     const initial=location.hash.replace(/^#\//,'');page=nav.flatMap(g=>g.items).some(x=>x[0]===initial)?initial:'overview';draw();
 })();
